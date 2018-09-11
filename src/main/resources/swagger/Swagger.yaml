@@ -1,0 +1,351 @@
+openapi: "3.0.0"
+info:
+  description: "This is Swagger definition of the Gift Commit backend. In order to pass authorization filters, you first must create an account to get the appropriate credentials. You can find out more about Swagger at [http://swagger.io](http://swagger.io)"
+  version: "1.0.0"
+  title: "Gift Commit"
+  contact:
+    email: "brett@spradling.me"
+servers:
+- url: https://gifts.spradling.me/v1
+paths:
+  /accounts:
+    get:
+      summary: List all accounts
+      operationId: listAccounts
+      tags:
+      - Account
+      parameters:
+      - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: The requested array of accounts
+          headers:
+          - $ref: '#/components/headers/X-Next'
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Accounts"
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    post:
+      summary: Create an account
+      operationId: createAccount
+      tags:
+      - Account
+      requestBody:
+        description: 'An account to create'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Account'
+      responses:
+        '201':
+          $ref: '#/components/responses/Created'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '422':
+          $ref: '#/components/responses/UnprocessibleEntity'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /accounts/{accountId}:
+    get:
+      summary: Get account
+      operationId: getAccount
+      tags:
+      - Account
+      parameters:
+      - $ref: "#/components/parameters/AccountId"
+      responses:
+        '200':
+          description: The requested account
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Account"
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    patch:
+      summary: Update an account
+      operationId: updateAccount
+      tags:
+      - Account
+      parameters:
+      - $ref: '#/components/parameters/AccountId'
+      responses:
+        '204':
+          description: 'Account updated'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '422':
+          $ref: '#/components/responses/UnprocessibleEntity'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    delete:
+      summary: Delete an account
+      operationId: deleteAccount
+      tags:
+      - Account
+      parameters:
+      - $ref: '#/components/parameters/AccountId'
+      responses:
+        '204':
+          description: 'Account deleted'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/UnprocessibleEntity'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /items:
+    get:
+      summary: List all items
+      operationId: getItems
+      tags:
+      - Item
+      parameters:
+      - name: accountId
+        in: query
+        description: Filter items based on accountId
+        required: false
+        schema:
+          type: string
+          format: uuid
+      - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: 'The requested array of items'
+          headers:
+          - $ref: '#/components/headers/X-Next'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Items'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    post:
+      summary: Create an item
+      operationId: createItem
+      tags:
+      - Item
+      requestBody:
+        description: 'An item to create'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Item'
+      responses:
+        '200':
+          $ref: '#/components/responses/Created'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /items/{itemId}:
+    get:
+      summary: Get item
+      operationId: getItem
+      tags:
+      - Item
+      parameters:
+      - $ref: "#/components/parameters/ItemId"
+      responses:
+        '200':
+          description: The requested item
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Item"
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    patch:
+      summary: Update an item
+      operationId: updateItem
+      tags:
+      - Item
+      parameters:
+      - $ref: '#/components/parameters/ItemId'
+      responses:
+        '204':
+          description: 'Item updated'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '422':
+          $ref: '#/components/responses/UnprocessibleEntity'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    delete:
+      summary: Delete an account
+      operationId: deleteAccount
+      tags:
+      - Item
+      parameters:
+      - $ref: '#/components/parameters/ItemId'
+      responses:
+        '204':
+          description: Item deleted
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/UnprocessibleEntity'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+components:
+  parameters:
+    AccountId:
+      name: accountId
+      in: path
+      description: Account ID
+      required: true
+      schema:
+        type: string
+        format: uuid
+    ItemId:
+      name: itemId
+      in: path
+      description: Item ID
+      required: true
+      schema:
+        type: string
+        format: uuid
+    Limit:
+      name: limit
+      in: query
+      description: How many items to return at one time
+      required: false
+      schema:
+        type: integer
+
+  headers:
+    X-Next:
+      description: A link to the next page of responses
+      schema:
+        type: string
+
+  schemas:
+    Item:
+      properties:
+        name:
+          type: string
+        price:
+          type: string
+        link:
+          type: string
+      required:
+      - name
+      - price
+      - link
+    Items:
+      type: array
+      items:
+        $ref: '#/components/schemas/Item'
+    Account:
+      properties:
+        parentId:
+          type: string
+          format: uuid
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+      required:
+      - name
+      - email
+    Accounts:
+      type: array
+      items:
+        $ref: "#/components/schemas/Account"
+    Error:
+      required:
+      - code
+      - message
+      properties:
+        code:
+          type: integer
+        message:
+          type: string
+
+  responses:
+    Created:
+      description: Created Resource ID
+      content:
+        application/json:
+          schema:
+            properties:
+              id:
+                type: string
+            required:
+            - id
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    NotFound:
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    UnprocessibleEntity:
+      description: The request was invalid
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    InternalServerError:
+      description: An internal server error
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
