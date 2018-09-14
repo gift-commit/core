@@ -6,14 +6,14 @@ import io.vertx.ext.web.Router
 import me.spradling.gift.core.api.routes.HealthHandler
 import javax.inject.Inject
 
-class RestVerticle @Inject constructor(val healthHandler : HealthHandler): AbstractVerticle() {
+class RestVerticle @Inject constructor(): AbstractVerticle() {
 
   override fun start(startFuture : Future<Void>) {
     val start = Future.future<Void>()
 
     val router = Router.router(vertx)
 
-    router.get("/health").handler(healthHandler)
+    router.get("/health").handler(HealthHandler())
 
     vertx.createHttpServer()
         .requestHandler(router::accept)

@@ -1,9 +1,8 @@
 package me.spradling.gift.core.api
 
 import dagger.Component
-import me.spradling.gift.core.api.modules.HealthHandlerModule
 
-@Component(modules = [HealthHandlerModule::class])
+@Component
 interface AppComponent {
   fun inject() : RestVerticle
 }

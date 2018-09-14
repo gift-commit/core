@@ -4,7 +4,9 @@ import io.vertx.core.Handler
 import io.vertx.core.json.Json
 import io.vertx.ext.web.RoutingContext
 import me.spradling.gift.core.api.models.responses.health.HealthResponse
+import javax.inject.Singleton
 
+@Singleton
 class HealthHandler: Handler<RoutingContext> {
 
   override fun handle(context: RoutingContext) {

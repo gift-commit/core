@@ -1,5 +1,3 @@
 package me.spradling.gift.core.api.models.responses
 
-open class ApiResponse {
-
-}
+data class ApiResponse(val statusCode: Int, val responseBody: Any)
