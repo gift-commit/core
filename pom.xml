@@ -6,20 +6,32 @@
 
   <groupId>me.spradling.gift</groupId>
   <artifactId>core</artifactId>
-  <packaging>pom</packaging>
   <version>1.0.0-SNAPSHOT</version>
 
   <properties>
+    <!--Maven Properties-->
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
     <!--Build Versions-->
     <java.version>1.8</java.version>
+    <maven.plugin.compiler.version>3.5.1</maven.plugin.compiler.version>
+    <maven.plugin.surefire.version>2.19.1</maven.plugin.surefire.version>
+    <maven.plugin.jar.plugin.version>3.0.2</maven.plugin.jar.plugin.version>
+    <maven.plugin.shade.version>2.4.3</maven.plugin.shade.version>
 
+    <!--Dependency Versions-->
     <kotlin.version>1.2.61</kotlin.version>
     <vertx-core.version>3.5.2</vertx-core.version>
     <dagger.version>2.9</dagger.version>
-  </properties>
 
-  <dependencyManagement>
-  </dependencyManagement>
+    <!--Test Dependency Versions-->
+    <assertj-core.version>3.9.0</assertj-core.version>
+    <junit.version>4.12</junit.version>
+    <junit.jupiter.version>5.0.2</junit.jupiter.version>
+    <junit.vintage.version>${junit.version}.2</junit.vintage.version>
+    <junit.platform.version>1.0.2</junit.platform.version>
+  </properties>
 
   <dependencies>
     <dependency>
@@ -49,6 +61,20 @@
       <version>${dagger.version}</version>
       <optional>true</optional>
     </dependency>
+
+    <!--Test Dependencies-->
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <version>${junit.jupiter.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <version>${assertj-core.version}</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>
@@ -65,6 +91,11 @@
             <goals>
               <goal>compile</goal>
             </goals>
+            <configuration>
+              <sourceDirs>
+                <sourceDir>${project.basedir}/src/main/kotlin</sourceDir>
+              </sourceDirs>
+            </configuration>
           </execution>
           <execution>
             <id>test-compile</id>
@@ -72,6 +103,11 @@
             <goals>
               <goal>test-compile</goal>
             </goals>
+            <configuration>
+              <sourceDirs>
+                <sourceDir>${project.basedir}/src/test/kotlin</sourceDir>
+              </sourceDirs>
+            </configuration>
           </execution>
           <execution>
             <id>kapt</id>
@@ -95,6 +131,114 @@
         <configuration>
           <jvmTarget>${java.version}</jvmTarget>
         </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>${maven.plugin.compiler.version}</version>
+        <configuration>
+          <source>${java.version}</source>
+          <target>${java.version}</target>
+        </configuration>
+        <executions>
+          <!-- Replacing default-compile as it is treated specially by maven -->
+          <execution>
+            <id>default-compile</id>
+            <phase>none</phase>
+          </execution>
+          <!-- Replacing default-testCompile as it is treated specially by maven -->
+          <execution>
+            <id>default-testCompile</id>
+            <phase>none</phase>
+          </execution>
+          <execution>
+            <id>java-compile</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>compile</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>java-test-compile</id>
+            <phase>test-compile</phase>
+            <goals>
+              <goal>testCompile</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>${maven.plugin.surefire.version}</version>
+        <configuration>
+          <includes>
+            <include>%regex[.*]</include>
+          </includes>
+          <excludes>
+            <exclude>%regex[.*.json]</exclude>
+          </excludes>
+        </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-surefire-provider</artifactId>
+            <version>${junit.platform.version}</version>
+          </dependency>
+          <dependency>
+            <groupId>org.junit.vintage</groupId>
+            <artifactId>junit-vintage-engine</artifactId>
+            <version>${junit.vintage.version}</version>
+          </dependency>
+          <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>${junit.jupiter.version}</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>${maven.plugin.jar.plugin.version}</version>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>${maven.plugin.shade.version}</version>
+        <configuration>
+          <createDependencyReducedPom>true</createDependencyReducedPom>
+          <shadedClassifierName>api</shadedClassifierName>
+          <shadedArtifactAttached>true</shadedArtifactAttached>
+          <transformers>
+            <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+            <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+              <manifestEntries>
+                <Package-Version>${project.version}</Package-Version>
+                <Main-Class>me.spradling.gift.core.api.Application</Main-Class>
+              </manifestEntries>
+            </transformer>
+          </transformers>
+          <filters>
+            <filter>
+              <artifact>*:*</artifact>
+              <excludes>
+                <exclude>META-INF/*.SF</exclude>
+                <exclude>META-INF/*.DSA</exclude>
+                <exclude>META-INF/*.RSA</exclude>
+              </excludes>
+            </filter>
+          </filters>
+        </configuration>
+        <executions>
+          <execution>
+            <id>server-shade</id>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>
