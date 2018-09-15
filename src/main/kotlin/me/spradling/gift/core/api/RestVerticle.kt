@@ -2,15 +2,13 @@ package me.spradling.gift.core.api
 
 import io.vertx.core.AbstractVerticle
 import io.vertx.core.Future
-import io.vertx.core.Vertx
 import io.vertx.ext.web.Router
 import io.vertx.ext.web.handler.StaticHandler
 import me.spradling.gift.core.api.routes.HealthHandler
-import javax.inject.Inject
 
-class RestVerticle: AbstractVerticle() {
+class RestVerticle : AbstractVerticle() {
 
-  override fun start(startFuture : Future<Void>) {
+  override fun start(startFuture: Future<Void>) {
     val router = configureRouter()
 
     vertx.createHttpServer()
@@ -26,7 +24,7 @@ class RestVerticle: AbstractVerticle() {
         }
   }
 
-  private fun configureRouter() : Router {
+  private fun configureRouter(): Router {
     val router = Router.router(vertx)
 
     router.route("/*").handler(StaticHandler.create())
