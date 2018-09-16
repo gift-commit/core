@@ -30,7 +30,7 @@ class RestVerticle @Inject constructor(val configuration: GiftCommitConfiguratio
   private fun configureRouter(): Router {
     val router = Router.router(vertx)
 
-    router.route("/*").handler(StaticHandler.create())
+    router.route("/swagger/*").handler(StaticHandler.create("swagger"))
     router.get("/health").handler(HealthHandler())
 
     return router
