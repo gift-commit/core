@@ -3,7 +3,7 @@ package me.spradling.gift.core.api
 import io.vertx.core.Vertx
 import javax.inject.Inject
 
-class Application @Inject constructor(val vertx: Vertx) {
+class Application @Inject constructor(val vertx: Vertx, val restVerticle: RestVerticle) {
 
   companion object {
     @JvmStatic
@@ -13,6 +13,6 @@ class Application @Inject constructor(val vertx: Vertx) {
   }
 
   fun launch () {
-    vertx.deployVerticle(RestVerticle())
+    vertx.deployVerticle(restVerticle)
   }
 }

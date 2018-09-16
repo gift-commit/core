@@ -4,18 +4,21 @@ import io.vertx.core.AbstractVerticle
 import io.vertx.core.Future
 import io.vertx.ext.web.Router
 import io.vertx.ext.web.handler.StaticHandler
+import me.spradling.gift.core.api.models.configuration.GiftCommitConfiguration
 import me.spradling.gift.core.api.routes.HealthHandler
+import javax.inject.Inject
 
-class RestVerticle : AbstractVerticle() {
+class RestVerticle @Inject constructor(val configuration: GiftCommitConfiguration) : AbstractVerticle() {
 
   override fun start(startFuture: Future<Void>) {
     val router = configureRouter()
+    var apiConfiguration = configuration.apiConfiguration
 
     vertx.createHttpServer()
         .requestHandler(router::accept)
-        .listen(8080) { result ->
+        .listen(apiConfiguration.port) { result ->
           if (result.succeeded()) {
-            print("Successfully started on port 8080")
+            print(String.format("Successfully started on port %s", apiConfiguration.port))
             startFuture.complete()
           } else {
             print("Failed to start." + result.cause())
