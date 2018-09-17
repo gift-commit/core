@@ -9,6 +9,10 @@
   <version>1.0.0-SNAPSHOT</version>
 
   <properties>
+    <!--Docker Properties-->
+    <docker.image.name>gift-commit/core</docker.image.name>
+    <docker.image.tag>${project.version}</docker.image.tag>
+
     <!--Maven Properties-->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -16,9 +20,10 @@
     <!--Build Versions-->
     <java.version>1.8</java.version>
     <maven.plugin.compiler.version>3.5.1</maven.plugin.compiler.version>
-    <maven.plugin.surefire.version>2.19.1</maven.plugin.surefire.version>
+    <maven.plugin.docker.version>1.0.0</maven.plugin.docker.version>
     <maven.plugin.jar.plugin.version>3.0.2</maven.plugin.jar.plugin.version>
     <maven.plugin.shade.version>2.4.3</maven.plugin.shade.version>
+    <maven.plugin.surefire.version>2.19.1</maven.plugin.surefire.version>
 
     <!--Dependency Versions-->
     <kotlin.version>1.2.61</kotlin.version>
@@ -243,6 +248,36 @@
             </goals>
           </execution>
         </executions>
+      </plugin>
+      <plugin>
+        <groupId>com.spotify</groupId>
+        <artifactId>docker-maven-plugin</artifactId>
+        <version>${maven.plugin.docker.version}</version>
+        <executions>
+          <execution>
+            <id>docker</id>
+            <phase>package</phase>
+            <goals>
+              <goal>build</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <dockerDirectory>${project.basedir}/docker</dockerDirectory>
+          <imageName>${docker.image.name}</imageName>
+          <imageTags>
+            <imageTag>${docker.image.tag}</imageTag>
+          </imageTags>
+          <resources>
+            <resource>
+              <targetPath>/jars</targetPath>
+              <directory>${project.build.directory}</directory>
+              <includes>
+                <include>*-api.jar</include>
+              </includes>
+            </resource>
+          </resources>
+        </configuration>
       </plugin>
     </plugins>
   </build>
