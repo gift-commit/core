@@ -22,7 +22,7 @@
 
     <!--Dependency Versions-->
     <kotlin.version>1.2.61</kotlin.version>
-    <vertx-core.version>3.5.2</vertx-core.version>
+    <vertx.version>3.5.2</vertx.version>
     <dagger.version>2.9</dagger.version>
 
     <!--Test Dependency Versions-->
@@ -42,14 +42,18 @@
     <dependency>
       <groupId>io.vertx</groupId>
       <artifactId>vertx-core</artifactId>
-      <version>${vertx-core.version}</version>
+      <version>${vertx.version}</version>
     </dependency>
     <dependency>
       <groupId>io.vertx</groupId>
       <artifactId>vertx-web</artifactId>
-      <version>${vertx-core.version}</version>
+      <version>${vertx.version}</version>
     </dependency>
-
+    <dependency>
+      <groupId>io.vertx</groupId>
+      <artifactId>vertx-config</artifactId>
+      <version>${vertx.version}</version>
+    </dependency>
     <dependency>
       <groupId>com.google.dagger</groupId>
       <artifactId>dagger</artifactId>

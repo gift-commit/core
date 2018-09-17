@@ -1,0 +1,7 @@
+{
+  "api": {
+    "host": "gifts.spradling.me",
+    "port": 8080,
+    "ssl": true
+  }
+}
