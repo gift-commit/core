@@ -29,6 +29,8 @@
     <kotlin.version>1.2.61</kotlin.version>
     <vertx.version>3.5.2</vertx.version>
     <dagger.version>2.9</dagger.version>
+    <aws-java-sdk-rds.version>1.11.409</aws-java-sdk-rds.version>
+    <mysql-connector-java.version>5.1.39</mysql-connector-java.version>
 
     <!--Test Dependency Versions-->
     <assertj-core.version>3.9.0</assertj-core.version>
@@ -69,6 +71,16 @@
       <artifactId>dagger-compiler</artifactId>
       <version>${dagger.version}</version>
       <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>com.amazonaws</groupId>
+      <artifactId>aws-java-sdk-rds</artifactId>
+      <version>${aws-java-sdk-rds.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>mysql</groupId>
+      <artifactId>mysql-connector-java</artifactId>
+      <version>${mysql-connector-java.version}</version>
     </dependency>
 
     <!--Test Dependencies-->

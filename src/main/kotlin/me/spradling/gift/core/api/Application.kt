@@ -7,12 +7,12 @@ class Application @Inject constructor(val vertx: Vertx, val restVerticle: RestVe
 
   companion object {
     @JvmStatic
-    fun main(args : Array<String>) {
+    fun main(args: Array<String>) {
       DaggerAppComponent.create().application().launch()
     }
   }
 
-  fun launch () {
+  fun launch() {
     vertx.deployVerticle(restVerticle)
   }
 }
