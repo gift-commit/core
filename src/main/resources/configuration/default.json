@@ -6,15 +6,11 @@
   },
   "storage": {
     "selected": "RDS",
-    "clients": [
-      {
-        "name": "RDS",
-        "host": "gift-commit.ciirzp1nhcz0.us-west-2.rds.amazonaws.com",
-        "instance": "gift_commit",
-        "useSsl": false,
-        "user": "gc_admin",
-        "password": ""
-      }
-    ]
+    "rds": {
+      "host": "gift-commit.ciirzp1nhcz0.us-west-2.rds.amazonaws.com",
+      "instance": "gift_commit",
+      "useSsl": false,
+      "user": "gc_admin"
+    }
   }
 }

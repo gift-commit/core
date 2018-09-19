@@ -4,10 +4,8 @@ import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonTypeName
 import me.spradling.gift.core.api.models.Account
-import me.spradling.gift.core.api.models.GiftCommitStorageProvider
 import me.spradling.gift.core.api.models.Item
 import me.spradling.gift.core.api.models.configuration.StorageClient
-import java.sql.Connection
 import java.sql.DriverManager
 
 @JsonTypeName("RDS")
@@ -22,14 +20,15 @@ class RDSGiftCommitStorageClient @JsonCreator constructor(
     user: String,
     @JsonProperty("password")
     password: String) :
-    StorageClient(GiftCommitStorageProvider.RDS, host, instance, useSsl, user, password) {
+    StorageClient(host, instance, useSsl, user, password) {
 
-  private val connection: Connection
+  private val connection by lazy {
+    val url = MySqlJdbcConnection(this.host, this.instance, this.useSsl).build()
+    DriverManager.getConnection(url, this.user, this.password)
+  }
 
   init {
     Class.forName("com.mysql.jdbc.Driver").newInstance()
-    val url = MySqlJdbcConnection(this.host, this.instance, this.useSsl).build()
-    this.connection = DriverManager.getConnection(url, this.user, this.password)
   }
 
   override fun createAccount(account: Account) {
