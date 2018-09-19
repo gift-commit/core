@@ -4,5 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
 
 data class GiftCommitConfiguration constructor(
   @JsonProperty("api")
-  val apiConfiguration : ApiConfiguration
+  val apiConfiguration : ApiConfiguration,
+  @JsonProperty("storage")
+  val storageConfiguration: StorageConfiguration
 )
