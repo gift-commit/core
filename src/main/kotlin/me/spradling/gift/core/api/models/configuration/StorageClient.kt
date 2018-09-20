@@ -7,13 +7,7 @@ import me.spradling.gift.core.api.database.GiftCommitStorageClient
 import me.spradling.gift.core.api.database.aws.RDSGiftCommitStorageClient
 import me.spradling.gift.core.api.models.GiftCommitStorageProvider
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "name")
-@JsonSubTypes(
-    JsonSubTypes.Type(value = RDSGiftCommitStorageClient::class, name = "RDS")
-)
 abstract class StorageClient constructor(
-    @JsonProperty("name")
-    val name: GiftCommitStorageProvider,
     @JsonProperty("host")
     val host: String,
     @JsonProperty("instance")

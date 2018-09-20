@@ -5,6 +5,7 @@ import dagger.Provides
 import io.vertx.config.ConfigRetriever
 import io.vertx.config.ConfigStoreOptions
 import io.vertx.core.Vertx
+import io.vertx.core.json.JsonArray
 import io.vertx.core.json.JsonObject
 import io.vertx.kotlin.config.ConfigRetrieverOptions
 import me.spradling.gift.core.api.VertxFuture
@@ -20,7 +21,10 @@ class ConfigurationModule {
 
     val fileStore = ConfigStoreOptions().setType("file")
                                         .setConfig(JsonObject(mapOf("path" to "configuration/default.json")))
-    val options = ConfigRetrieverOptions(stores = listOf(fileStore))
+    val fileSecretStore = ConfigStoreOptions().setType("file")
+                                              .setConfig(JsonObject(mapOf("path" to ".build/secrets/decrypted/secrets.json")))
+
+    val options = ConfigRetrieverOptions(stores = listOf(fileStore, fileSecretStore))
     val retriever = ConfigRetriever.create(vertx, options)
 
     val configFuture = ConfigRetriever.getConfigAsFuture(retriever)

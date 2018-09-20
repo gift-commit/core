@@ -24,5 +24,7 @@ hs_err_pid*
 
 .idea/
 .vertx/
+.build/secrets/decrypted/*
+!.build/secrets/decryped/.gitkeep
 target/
 *.iml
