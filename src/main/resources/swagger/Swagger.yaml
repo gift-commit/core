@@ -166,8 +166,8 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         '403':
           $ref: '#/components/responses/Forbidden'
-        '404':
-          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/UnprocessibleEntity'
         '500':
           $ref: '#/components/responses/InternalServerError'
   /items/{itemId}:
@@ -267,33 +267,36 @@ components:
   schemas:
     Item:
       properties:
+        event:
+          type: string
+        claimed:
+          type: boolean
         name:
+          type: string
+        url:
           type: string
         price:
           type: string
-        link:
+        notes:
           type: string
-      required:
-      - name
-      - price
-      - link
     Items:
       type: array
       items:
         $ref: '#/components/schemas/Item'
     Account:
       properties:
-        parentId:
+        groupId:
           type: string
           format: uuid
-        name:
+        firstName:
           type: string
+        lastName: string
         email:
           type: string
           format: email
-      required:
-      - name
-      - email
+        password:
+          type: string
+          format: password
     Accounts:
       type: array
       items:

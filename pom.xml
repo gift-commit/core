@@ -29,6 +29,7 @@
     <kotlin.version>1.2.61</kotlin.version>
     <vertx.version>3.5.2</vertx.version>
     <dagger.version>2.9</dagger.version>
+    <jbcrypt.version>0.4</jbcrypt.version>
     <aws-java-sdk-rds.version>1.11.409</aws-java-sdk-rds.version>
     <mysql-connector-java.version>5.1.39</mysql-connector-java.version>
 
@@ -71,6 +72,11 @@
       <artifactId>dagger-compiler</artifactId>
       <version>${dagger.version}</version>
       <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.mindrot</groupId>
+      <artifactId>jbcrypt</artifactId>
+      <version>${jbcrypt.version}</version>
     </dependency>
     <dependency>
       <groupId>com.amazonaws</groupId>

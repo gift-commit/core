@@ -1,11 +1,11 @@
-package me.spradling.gift.core.api.database.aws
+package me.spradling.gift.core.database.aws
 
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonTypeName
-import me.spradling.gift.core.api.models.Account
-import me.spradling.gift.core.api.models.Item
 import me.spradling.gift.core.api.models.configuration.StorageClient
+import me.spradling.gift.core.database.models.Account
+import me.spradling.gift.core.database.models.Item
 import java.sql.DriverManager
 
 @JsonTypeName("RDS")
@@ -27,12 +27,22 @@ class RDSGiftCommitStorageClient @JsonCreator constructor(
     DriverManager.getConnection(url, this.user, this.password)
   }
 
+  private val accountTable = "account"
+  private val itemTable = "item"
+
   init {
     Class.forName("com.mysql.jdbc.Driver").newInstance()
   }
 
   override fun createAccount(account: Account) {
-    TODO("not implemented")
+    val createQuery = "INSERT INTO $accountTable VALUES (${account.accountId}," +
+                                                        "${account.groupId}," +
+                                                        "${account.firstName}," +
+                                                        "${account.lastName}," +
+                                                        "${account.email}," +
+                                                        "${account.password})"
+
+    connection.createStatement().executeQuery(createQuery)
   }
 
   override fun getAccount(accountId: String): Account {
