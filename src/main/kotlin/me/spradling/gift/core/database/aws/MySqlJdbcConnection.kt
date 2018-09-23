@@ -1,4 +1,4 @@
-package me.spradling.gift.core.api.database.aws
+package me.spradling.gift.core.database.aws
 
 class MySqlJdbcConnection(private val host: String,
                           private val database: String,

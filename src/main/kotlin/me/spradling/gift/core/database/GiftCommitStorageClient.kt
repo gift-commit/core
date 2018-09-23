@@ -1,7 +1,7 @@
-package me.spradling.gift.core.api.database
+package me.spradling.gift.core.database
 
-import me.spradling.gift.core.api.models.Account
-import me.spradling.gift.core.api.models.Item
+import me.spradling.gift.core.database.models.Account
+import me.spradling.gift.core.database.models.Item
 
 interface GiftCommitStorageClient {
 
