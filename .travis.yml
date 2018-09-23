@@ -7,7 +7,7 @@ env:
   - secure: RMIV2eS+UKpz6ERXed3/gqvT/+JgPKJyLiPZ2hban6iykwSq/HvU/oSSOSaPCORJtjpelW+LJvidO0bBuc5KGZUWLwo3JF3WrvuG/+vDxvPgRCmBwtPtzE1zckr6ENa/+CUX+CNri6W1LeGFzvo34Fv4yLQGxJrwEsjmPTjWJ9FJ+MNgUJ0xgxZ/rvMowAKf8GAHobHP3s8MDy1vq1PR1ddMi7JYPLvRXJ2BvlrV3dNRCKN8Y3Fm9CSzPf0F9aKI1ImZ/JroSuVLnC5WF9duvf4f+XA1jvV5ACOB+9NGV+bTQ4VEn9rbcQTatxwrAsICn6vRjXJapFg2n0LuZ2LLVsIFHLGdn/tOk+E7fDOmHZlz1m2bqCT1ON0XQS2pAnAndU1cu9YhteyjT3x+9cBd5ujS7/7P8MlUOick5nxRox2u6R7usEHllfk9JWmuYaQYBEwpbMglielJfojCEqz2iu4k4PdIOUz1cj6OFEk24uDup6zEDkAXZYlMHOqN//dPb7mlcCLdEoxWjV0/pq4fSSbr7BdwrWqdcKTPgminLM/TyfqFvBJyBuyx6f+YAyHdz1kOLfoyEqv3DVOwl3Owi9z0cjvsaB8qA4G7TwY2vrKqqKEOUmPLTCBm+PYtM/6cJ2bnfsV79gqpon1sbb2zbns64ZT4IpX3bjw+b7OzqRI=
 before_install:
 - openssl aes-256-cbc -K $encrypted_522778301c96_key -iv $encrypted_522778301c96_iv
-  -in ./.build/secrets/secrets.json.enc -out ./.build/secrets/decrypted/secrets.json
+  -in .build/secrets/secrets.json.enc -out .build/secrets/decrypted/secrets.json -d
 script: mvn clean package
 deploy:
   provider: script
