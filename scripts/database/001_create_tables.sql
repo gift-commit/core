@@ -9,13 +9,13 @@ CREATE TABLE account(
 
 CREATE TABLE item(
   itemId VARCHAR(255) PRIMARY KEY,
-  accountId VARCHAR(255),
+  ownedBy VARCHAR(255) NOT NULL,
+  claimedBy VARCHAR(255),
   event VARCHAR(255) NOT NULL,
-  claimed BOOLEAN NOT NULL,
   name VARCHAR(255) NOT NULL,
   url VARCHAR(255),
   price DECIMAL,
   notes VARCHAR(255),
-  tags VARCHAR(255),
-  FOREIGN KEY (accountId) REFERENCES account(accountId)
+  FOREIGN KEY (ownedBy) REFERENCES account(accountId),
+  FOREIGN KEY (claimedBy) REFERENCES account(accountId)
 );
