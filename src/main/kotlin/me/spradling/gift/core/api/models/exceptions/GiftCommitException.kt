@@ -4,7 +4,7 @@ import me.spradling.gift.core.api.models.errors.ErrorDetails
 
 class GiftCommitException : Exception {
 
-  private val error : ErrorDetails
+  val error : ErrorDetails
 
   constructor(error: ErrorDetails): super() {
     this.error = error

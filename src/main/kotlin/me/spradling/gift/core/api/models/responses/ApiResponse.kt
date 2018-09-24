@@ -4,7 +4,7 @@ import me.spradling.gift.core.api.models.errors.Error
 import me.spradling.gift.core.api.models.errors.ErrorDetails
 import java.util.Optional
 
-class ApiResponse {
+open class ApiResponse {
 
   val statusCode: Int
   val body: Optional<Any>

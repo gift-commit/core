@@ -39,6 +39,8 @@
     <junit.jupiter.version>5.0.2</junit.jupiter.version>
     <junit.vintage.version>${junit.version}.2</junit.vintage.version>
     <junit.platform.version>1.0.2</junit.platform.version>
+    <mockito-core.version>2.21.0</mockito-core.version>
+    <vertx-codegen.version>3.2.1</vertx-codegen.version>
   </properties>
 
   <dependencies>
@@ -100,6 +102,20 @@
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>
       <version>${assertj-core.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <version>${mockito-core.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <!--Only adding vertx-codegen to fix NPE while mocking RoutingContext-->
+    <!--More information: https://github.com/mockito/mockito/issues/366-->
+    <dependency>
+      <groupId>io.vertx</groupId>
+      <artifactId>vertx-codegen</artifactId>
+      <version>${vertx-codegen.version}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

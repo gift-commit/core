@@ -5,7 +5,7 @@
     "ssl": true
   },
   "storage": {
-    "selected": "IN_MEMORY",
+    "selected": "RDS",
     "rds": {
       "host": "gift-commit.ciirzp1nhcz0.us-west-2.rds.amazonaws.com",
       "instance": "gift_commit",
