@@ -29,7 +29,7 @@ class ConfigurationModule {
 
     val configFuture = ConfigRetriever.getConfigAsFuture(retriever)
 
-    var jsonObject = VertxFuture.unwrap(configFuture)
+    val jsonObject = VertxFuture.unwrap(configFuture)
     return jsonObject.mapTo(GiftCommitConfiguration::class.java)
   }
 }
