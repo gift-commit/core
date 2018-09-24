@@ -9,8 +9,8 @@ addons:
   ssh_known_hosts: ec2-35-163-156-14.us-west-2.compute.amazonaws.com
 before_install:
 - openssl aes-256-cbc -K $encrypted_522778301c96_key -iv $encrypted_522778301c96_iv
-  -in .build/secrets/decrypted.tar.enc -out .build/secrets/decrypted/decrypted.tar -d
-- tar xvf .build/secrets/decrypted/decrypted.tar
+  -in .build/secrets/secrets.tar.enc -out .build/secrets/decrypted/secrets.tar -d
+- tar -xvf .build/secrets/decrypted/secrets.tar
 install: true
 before_script:
 - if [[ $TRAVIS_TAG ]]; then mvn versions:set -DnewVersion=$TRAVIS_TAG; fi
