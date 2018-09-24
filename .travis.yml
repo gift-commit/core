@@ -16,6 +16,7 @@ before_script:
 - if [[ $TRAVIS_TAG ]]; then mvn versions:set -DnewVersion=$TRAVIS_TAG; fi
 script: mvn clean package
 deploy:
+  skip_cleanup: true
   provider: script
   script: sh .build/deploy-aws.sh
   on:

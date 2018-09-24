@@ -4,8 +4,6 @@ eval $(aws ecr get-login --region us-west-2 --no-include-email)
 docker tag gift-commit/core:latest 046006883301.dkr.ecr.us-west-2.amazonaws.com/gift-commit/core:$TRAVIS_TAG
 docker push 046006883301.dkr.ecr.us-west-2.amazonaws.com/gift-commit/core:$TRAVIS_TAG
 
-chmod 600 .build/secrets/decrypted/shared.pem
-
 ssh -i .build/secrets/decrypted/shared.pem ec2-user@ec2-35-163-156-14.us-west-2.compute.amazonaws.com << EOF
   eval $(aws ecr get-login --region us-west-2 --no-include-email)
   docker pull 046006883301.dkr.ecr.us-west-2.amazonaws.com/gift-commit/core:latest
