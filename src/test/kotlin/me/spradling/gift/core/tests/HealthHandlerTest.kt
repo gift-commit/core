@@ -1,4 +1,4 @@
-package me.spradling.gift.core.api.tests
+package me.spradling.gift.core.tests
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test

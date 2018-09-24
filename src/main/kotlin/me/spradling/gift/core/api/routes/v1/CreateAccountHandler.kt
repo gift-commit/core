@@ -1,10 +1,10 @@
 package me.spradling.gift.core.api.routes.v1
 
-import io.netty.handler.codec.http.HttpResponseStatus
 import me.spradling.gift.core.api.models.Account
 import me.spradling.gift.core.api.models.ApiRequest
 import me.spradling.gift.core.api.models.errors.ErrorDetails
 import me.spradling.gift.core.api.models.responses.ApiResponse
+import me.spradling.gift.core.api.models.responses.CreatedResourceResponse
 import me.spradling.gift.core.api.routes.GiftCommitHandler
 import me.spradling.gift.core.conversion.GiftCommitStorageConverter
 import me.spradling.gift.core.database.GiftCommitStorageClient
@@ -20,9 +20,9 @@ class CreateAccountHandler(private val storageClient : GiftCommitStorageClient) 
     }
 
     val account = request.requestBody!!
-    storageClient.createAccount(storageConverter.convert(account))
+    val accountId = storageClient.createAccount(storageConverter.convert(account))
 
-    return ApiResponse(HttpResponseStatus.CREATED.code())
+    return CreatedResourceResponse(accountId)
   }
 
   private fun Account?.isInvalid() : Boolean {

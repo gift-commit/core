@@ -23,7 +23,7 @@ class RDSGiftCommitStorageClient @JsonCreator constructor(
     StorageClient(host, instance, useSsl, user, password) {
 
   private val connection by lazy {
-    val url = MySqlJdbcConnection(this.host, this.instance, this.useSsl).build()
+    val url = MySqlConnection(this.host, this.instance, this.useSsl).build()
     DriverManager.getConnection(url, this.user, this.password)
   }
 
@@ -34,7 +34,7 @@ class RDSGiftCommitStorageClient @JsonCreator constructor(
     Class.forName("com.mysql.jdbc.Driver").newInstance()
   }
 
-  override fun createAccount(account: Account) {
+  override fun createAccount(account: Account) : String {
     val createQuery = "INSERT INTO $accountTable VALUES (${account.accountId}," +
                                                         "${account.groupId}," +
                                                         "${account.firstName}," +
@@ -43,6 +43,8 @@ class RDSGiftCommitStorageClient @JsonCreator constructor(
                                                         "${account.password})"
 
     connection.createStatement().executeQuery(createQuery)
+
+    return account.accountId
   }
 
   override fun getAccount(accountId: String): Account {
@@ -57,7 +59,7 @@ class RDSGiftCommitStorageClient @JsonCreator constructor(
     TODO("not implemented")
   }
 
-  override fun createItem(item: Item) {
+  override fun createItem(item: Item) : String {
     TODO("not implemented")
   }
 

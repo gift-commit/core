@@ -5,8 +5,8 @@ import com.fasterxml.jackson.annotation.JsonProperty
 class Error (details: ErrorDetails) {
 
   @JsonProperty("code")
-  private val code = details.name
+  val code = details.name
 
   @JsonProperty("message")
-  private val message = details.message
+  val message = details.message
 }
