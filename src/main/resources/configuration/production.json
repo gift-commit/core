@@ -1,0 +1,10 @@
+{
+  "api": {
+    "host": "gifts.spradling.me",
+    "port": 8080,
+    "ssl": false
+  },
+  "storage": {
+    "selected": "RDS"
+  }
+}

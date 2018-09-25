@@ -5,7 +5,6 @@ import dagger.Provides
 import io.vertx.config.ConfigRetriever
 import io.vertx.config.ConfigStoreOptions
 import io.vertx.core.Vertx
-import io.vertx.core.json.JsonArray
 import io.vertx.core.json.JsonObject
 import io.vertx.kotlin.config.ConfigRetrieverOptions
 import me.spradling.gift.core.api.VertxFuture
@@ -19,12 +18,17 @@ class ConfigurationModule {
   @Provides
   fun providesGiftCommitConfiguration(vertx : Vertx) : GiftCommitConfiguration {
 
-    val fileStore = ConfigStoreOptions().setType("file")
-                                        .setConfig(JsonObject(mapOf("path" to "configuration/default.json")))
-    val fileSecretStore = ConfigStoreOptions().setType("file")
-                                              .setConfig(JsonObject(mapOf("path" to ".build/secrets/decrypted/secrets.json")))
+    val environment = System.getenv("environment")
 
-    val options = ConfigRetrieverOptions(stores = listOf(fileStore, fileSecretStore))
+    val fileStore = ConfigStoreOptions().setType("file")
+        .setConfig(JsonObject(mapOf("path" to "configuration/default.json")))
+    val fileSecretStore = ConfigStoreOptions().setType("file")
+        .setConfig(JsonObject(mapOf("path" to ".build/secrets/decrypted/secrets.json")))
+    val environmentStore = ConfigStoreOptions().setType("file")
+        .setOptional(true)
+        .setConfig(JsonObject(mapOf("path" to "configuration/$environment.json")))
+
+    val options = ConfigRetrieverOptions(stores = listOf(fileStore, fileSecretStore, environmentStore))
     val retriever = ConfigRetriever.create(vertx, options)
 
     val configFuture = ConfigRetriever.getConfigAsFuture(retriever)
