@@ -1,11 +1,11 @@
 {
   "api": {
-    "host": "gifts.spradling.me",
+    "host": "localhost",
     "port": 8080,
-    "ssl": true
+    "ssl": false
   },
   "storage": {
-    "selected": "RDS",
+    "selected": "IN_MEMORY",
     "rds": {
       "host": "gift-commit.ciirzp1nhcz0.us-west-2.rds.amazonaws.com",
       "instance": "gift_commit",
