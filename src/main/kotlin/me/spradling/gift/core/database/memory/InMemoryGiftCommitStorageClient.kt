@@ -25,6 +25,10 @@ class InMemoryGiftCommitStorageClient : GiftCommitStorageClient {
     return Future.succeededFuture(account)
   }
 
+  override fun getAccounts(count: Int): List<Account> {
+    return accounts.values.toList().subList(0, count)
+  }
+
   override fun updateAccount(accountId: String, updatedAccount: Account) : Future<Void> {
     accounts[accountId] = updatedAccount
     return Future.succeededFuture()

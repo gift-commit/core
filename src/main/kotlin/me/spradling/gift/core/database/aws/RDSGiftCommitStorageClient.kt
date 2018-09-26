@@ -9,6 +9,7 @@ import me.spradling.gift.core.api.models.exceptions.ResourceNotFoundException
 import me.spradling.gift.core.database.models.Account
 import me.spradling.gift.core.database.models.Item
 import java.sql.DriverManager
+import java.sql.SQLException
 
 @JsonTypeName("RDS")
 class RDSGiftCommitStorageClient @JsonCreator constructor(
@@ -54,13 +55,13 @@ class RDSGiftCommitStorageClient @JsonCreator constructor(
     val accounts = mutableListOf<Account>()
     var resultSet = connection.createStatement().executeQuery(getQuery)
 
-    while(resultSet.next()) {
+    while (resultSet.next()) {
       accounts.add(Account(resultSet.getString("accountId"),
-                           resultSet.getString("groupId"),
-                           resultSet.getString("firstName"),
-                           resultSet.getString("lastName"),
-                           resultSet.getString("email"),
-                           resultSet.getString("password")))
+          resultSet.getString("groupId"),
+          resultSet.getString("firstName"),
+          resultSet.getString("lastName"),
+          resultSet.getString("email"),
+          resultSet.getString("password")))
     }
 
     if (accounts.isEmpty()) {
@@ -68,7 +69,28 @@ class RDSGiftCommitStorageClient @JsonCreator constructor(
     }
 
     return Future.succeededFuture(accounts[0])
+  }
 
+  override fun getAccounts(count: Int): List<Account> {
+    val getQuery = "GET * from $accountTable LIMIT $count"
+    val accounts = arrayListOf<Account>()
+
+    try {
+      val rs = connection.createStatement().executeQuery(getQuery)
+
+      while (rs.next()) {
+        accounts.add(Account(rs.getString("accountId"),
+                              rs.getString("groupId"),
+                              rs.getString("firstName"),
+                              rs.getString("lastName"),
+                              rs.getString("email"),
+                              rs.getString("password")))
+      }
+    } catch (e: SQLException) {
+      print(e)
+    } finally {
+      return accounts
+    }
   }
 
   override fun updateAccount(accountId: String, updatedAccount: Account) : Future<Void> {
