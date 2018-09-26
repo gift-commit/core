@@ -42,6 +42,7 @@ class RestVerticle @Inject constructor(val configuration: GiftCommitConfiguratio
 
     router.route(HttpMethod.POST, "/*").handler(BodyHandlerImpl())
     router.route(HttpMethod.PATCH, "/*").handler(BodyHandlerImpl())
+
     router.route("/swagger/*").handler(StaticHandler.create("swagger"))
     router.get("/health").handler(HealthHandler())
     router.get("/v1/accounts").handler(GetAccountsHandler(storageClient))
