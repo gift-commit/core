@@ -13,8 +13,7 @@ class GiftCommitApiConverter {
       Account(account.groupId,
               account.firstName,
               account.lastName,
-              account.email,
-              account.password)
+              account.email)
     }.collect(Collectors.toList())
   }
 }

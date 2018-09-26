@@ -20,7 +20,7 @@ class InMemoryGiftCommitStorageClient : GiftCommitStorageClient {
   }
 
   override fun getAccounts(count: Int): List<Account> {
-    return accounts.values.toList().subList(0, count)
+    return accounts.values.toList().subList(0, minOf(count, accounts.values.size))
   }
 
   override fun getAccount(accountId: String): Account {

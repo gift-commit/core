@@ -2,6 +2,7 @@ package me.spradling.gift.core.api
 
 import io.vertx.core.AbstractVerticle
 import io.vertx.core.Future
+import io.vertx.core.http.HttpMethod
 import io.vertx.ext.web.Router
 import io.vertx.ext.web.handler.StaticHandler
 import io.vertx.ext.web.handler.impl.BodyHandlerImpl
@@ -35,7 +36,9 @@ class RestVerticle @Inject constructor(val configuration: GiftCommitConfiguratio
   private fun configureRouter(): Router {
     val router = Router.router(vertx)
 
-    router.route().handler(BodyHandlerImpl())
+    router.route(HttpMethod.POST, "/*").handler(BodyHandlerImpl())
+    router.route(HttpMethod.PATCH, "/*").handler(BodyHandlerImpl())
+
     router.route("/swagger/*").handler(StaticHandler.create("swagger"))
     router.get("/health").handler(HealthHandler())
     router.get("/v1/accounts").handler(GetAccountsHandler(storageClient))
