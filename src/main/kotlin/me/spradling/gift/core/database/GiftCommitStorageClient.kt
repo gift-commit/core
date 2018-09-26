@@ -6,6 +6,7 @@ import me.spradling.gift.core.database.models.Item
 interface GiftCommitStorageClient {
 
   fun createAccount(account: Account) : String
+  fun getAccounts(count: Int): List<Account>
   fun getAccount(accountId: String): Account
   fun updateAccount(accountId: String, updatedAccount: Account)
   fun deleteAccount(accountId: String)

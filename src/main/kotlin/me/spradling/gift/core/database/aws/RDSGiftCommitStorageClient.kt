@@ -7,6 +7,7 @@ import me.spradling.gift.core.api.models.configuration.StorageClient
 import me.spradling.gift.core.database.models.Account
 import me.spradling.gift.core.database.models.Item
 import java.sql.DriverManager
+import java.sql.SQLException
 
 @JsonTypeName("RDS")
 class RDSGiftCommitStorageClient @JsonCreator constructor(
@@ -45,6 +46,28 @@ class RDSGiftCommitStorageClient @JsonCreator constructor(
     connection.createStatement().executeQuery(createQuery)
 
     return account.accountId
+  }
+
+  override fun getAccounts(count: Int): List<Account> {
+    val getQuery = "GET * from $accountTable LIMIT $count"
+    val accounts = arrayListOf<Account>()
+
+    try {
+      val rs = connection.createStatement().executeQuery(getQuery)
+
+      while (rs.next()) {
+        accounts.add(Account(rs.getString("accountId"),
+                              rs.getString("groupId"),
+                              rs.getString("firstName"),
+                              rs.getString("lastName"),
+                              rs.getString("email"),
+                              rs.getString("password")))
+      }
+    } catch (e: SQLException) {
+      print(e)
+    } finally {
+      return accounts
+    }
   }
 
   override fun getAccount(accountId: String): Account {

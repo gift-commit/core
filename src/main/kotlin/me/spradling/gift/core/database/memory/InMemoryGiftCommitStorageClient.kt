@@ -12,11 +12,15 @@ class InMemoryGiftCommitStorageClient : GiftCommitStorageClient {
   val accounts: HashMap<String, Account> = hashMapOf()
   val items: HashMap<String, Item> = hashMapOf()
 
-  override fun createAccount(account: Account) : String {
+  override fun createAccount(account: Account): String {
     val accountId = account.accountId
 
     accounts[accountId] = account
     return accountId
+  }
+
+  override fun getAccounts(count: Int): List<Account> {
+    return accounts.values.toList().subList(0, count)
   }
 
   override fun getAccount(accountId: String): Account {
@@ -31,7 +35,7 @@ class InMemoryGiftCommitStorageClient : GiftCommitStorageClient {
     accounts.remove(accountId) ?: throw GiftCommitException(ErrorDetails.RESOURCE_NOT_FOUND)
   }
 
-  override fun createItem(item: Item) : String {
+  override fun createItem(item: Item): String {
     val itemId = item.itemId
 
     items[itemId] = item
@@ -43,7 +47,7 @@ class InMemoryGiftCommitStorageClient : GiftCommitStorageClient {
   }
 
   override fun getAccountItems(accountId: String): List<Item> {
-    return items.values.stream().filter{ item  -> item.accountId == accountId}.collect(Collectors.toList())
+    return items.values.stream().filter { item -> item.accountId == accountId }.collect(Collectors.toList())
   }
 
   override fun updateItem(itemId: String, updatedItem: Item) {
