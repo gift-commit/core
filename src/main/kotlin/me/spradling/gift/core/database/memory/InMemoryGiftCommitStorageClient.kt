@@ -3,6 +3,7 @@ package me.spradling.gift.core.database.memory
 import me.spradling.gift.core.api.models.errors.ErrorDetails
 import me.spradling.gift.core.database.GiftCommitStorageClient
 import me.spradling.gift.core.api.models.exceptions.GiftCommitException
+import me.spradling.gift.core.api.models.exceptions.ResourceNotFoundException
 import me.spradling.gift.core.database.models.Account
 import me.spradling.gift.core.database.models.Item
 import java.util.stream.Collectors
@@ -20,7 +21,7 @@ class InMemoryGiftCommitStorageClient : GiftCommitStorageClient {
   }
 
   override fun getAccount(accountId: String): Account {
-    return accounts[accountId] ?: throw GiftCommitException(ErrorDetails.RESOURCE_NOT_FOUND)
+    return accounts[accountId] ?: throw ResourceNotFoundException()
   }
 
   override fun updateAccount(accountId: String, updatedAccount: Account) {

@@ -1,0 +1,8 @@
+{
+  "groupId": "123456789",
+  "firstName": "Test",
+  "lastName": "User",
+  "email": "test@gmail.com",
+  "password": "testPassword123!",
+  "foo": "bar"
+}

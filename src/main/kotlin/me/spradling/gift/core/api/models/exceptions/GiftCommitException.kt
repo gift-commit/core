@@ -2,7 +2,7 @@ package me.spradling.gift.core.api.models.exceptions
 
 import me.spradling.gift.core.api.models.errors.ErrorDetails
 
-class GiftCommitException : Exception {
+open class GiftCommitException : Exception {
 
   val error : ErrorDetails
 
