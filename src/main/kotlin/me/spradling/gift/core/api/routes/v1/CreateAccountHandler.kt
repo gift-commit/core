@@ -17,13 +17,14 @@ class CreateAccountHandler(private val storageClient : GiftCommitStorageClient) 
   override fun handleRequest(request: ApiRequest<Account>): Future<ApiResponse> {
 
     if (request.requestBody.isInvalid()) {
-      return Future.succeededFuture(ApiResponse(ErrorDetails.INVALID_REQUEST))
+      return Future.succeededFuture(ApiResponse.from(ErrorDetails.INVALID_REQUEST))
     }
 
     val account = request.requestBody!!
-    val accountId = storageClient.createAccount(storageConverter.convert(account))
 
-    return Future.succeededFuture(CreatedResourceResponse(accountId))
+    return storageClient.createAccount(storageConverter.convert(account)).compose { id ->
+      Future.succeededFuture<ApiResponse>(CreatedResourceResponse(id))
+    }
   }
 
   private fun Account?.isInvalid() : Boolean {
