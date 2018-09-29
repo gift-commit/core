@@ -4,6 +4,7 @@ import io.vertx.core.Future
 import io.vertx.core.json.Json
 import io.vertx.ext.web.RoutingContext
 import me.spradling.gift.core.api.models.Account
+import me.spradling.gift.core.api.models.Item
 import me.spradling.gift.core.api.models.errors.Error
 import me.spradling.gift.core.api.models.errors.ErrorDetails
 import me.spradling.gift.core.api.models.responses.ApiResponse
@@ -28,6 +29,8 @@ open class UnitTestBase {
   protected val converter = GiftCommitStorageConverter(inMemoryStorageClient)
   protected val validAccounts = hashMapOf<String, Account>()
   protected val invalidAccounts = hashMapOf<String, Account>()
+  protected val validItems = hashMapOf<String, Item>()
+  protected val invalidItems = hashMapOf<String, Item>()
 
   init {
     getResourceList("$ValidFilePath/account").forEach { fileName ->
@@ -38,6 +41,14 @@ open class UnitTestBase {
     getResourceList("$InvalidFilePath/account").forEach { fileName ->
       val resource = readResource("$InvalidFilePath/account/$fileName")
       invalidAccounts[File(fileName).nameWithoutExtension] = Json.mapper.readValue(resource, Account::class.java)
+    }
+    getResourceList("$ValidFilePath/item").forEach { fileName ->
+      val resource = readResource("$ValidFilePath/item/$fileName")
+      validItems[File(fileName).nameWithoutExtension] = Json.mapper.readValue(resource, Item::class.java)
+    }
+    getResourceList("$InvalidFilePath/item").forEach { fileName ->
+      val resource = readResource("$InvalidFilePath/item/$fileName")
+      validItems[File(fileName).nameWithoutExtension] = Json.mapper.readValue(resource, Item::class.java)
     }
   }
 

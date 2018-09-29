@@ -6,7 +6,7 @@ data class Item constructor(
     val event: String,
     val claimed: Boolean,
     val name: String,
-    val url: String,
+    val url: String?,
     val price: Double,
-    val notes: String
+    val notes: String?
 )
