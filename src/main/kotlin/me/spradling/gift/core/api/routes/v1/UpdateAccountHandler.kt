@@ -20,7 +20,7 @@ class UpdateAccountHandler @Inject constructor(private val storageClient: GiftCo
   override fun handleRequest(request: ApiRequest<Account>): Future<ApiResponse> {
 
     val account = request.requestBody ?: return Future.succeededFuture(ApiResponse.from(ErrorDetails.INVALID_REQUEST))
-    val accountId = request.context.pathParam("accountId") ?: return Future.succeededFuture(ApiResponse.from(ErrorDetails.INVALID_REQUEST))
+    val accountId = request.context.pathParam("accountId")
 
     return storageConverter.merge(accountId, account).compose { mergedAccount ->
       storageClient.updateAccount(accountId, mergedAccount).compose { _ ->

@@ -85,7 +85,10 @@ class RDSGiftCommitStorageClient @JsonCreator constructor(
   }
 
   override fun deleteAccount(accountId: String): Future<Void> {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    val deleteQuery = "DELETE FROM $accountTable WHERE accountId=$accountId"
+    connection.createStatement().executeQuery(deleteQuery)
+
+    return Future.succeededFuture()
   }
 
   override fun createItem(item: Item): Future<String> {

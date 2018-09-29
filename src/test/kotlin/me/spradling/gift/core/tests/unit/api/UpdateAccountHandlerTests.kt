@@ -26,10 +26,7 @@ import java.util.concurrent.CountDownLatch
 @DisplayName("When I call `handle` on UpdateAccountHandler,")
 class UpdateAccountHandlerTests : UnitTestBase() {
 
-  private val mockContext = Mockito.mock(RoutingContext::class.java)!!
-  private val inMemoryStorageClient = InMemoryGiftCommitStorageClient()
   private val handler = UpdateAccountHandler(inMemoryStorageClient)
-  private val converter = GiftCommitStorageConverter(inMemoryStorageClient)
 
   @Nested
   @DisplayName("given a valid request,")

@@ -2,12 +2,16 @@ package me.spradling.gift.core.tests.unit
 
 import io.vertx.core.Future
 import io.vertx.core.json.Json
+import io.vertx.ext.web.RoutingContext
 import me.spradling.gift.core.api.models.Account
 import me.spradling.gift.core.api.models.errors.Error
 import me.spradling.gift.core.api.models.errors.ErrorDetails
 import me.spradling.gift.core.api.models.responses.ApiResponse
+import me.spradling.gift.core.conversion.GiftCommitStorageConverter
+import me.spradling.gift.core.database.memory.InMemoryGiftCommitStorageClient
 import me.spradling.gift.core.tests.unit.api.UpdateAccountHandlerTests
 import org.assertj.core.api.Assertions
+import org.mockito.Mockito
 import java.io.File
 
 open class UnitTestBase {
@@ -18,6 +22,10 @@ open class UnitTestBase {
     @JvmStatic
     private val InvalidFilePath = "/data/invalid"
   }
+
+  protected val mockContext = Mockito.mock(RoutingContext::class.java)!!
+  protected val inMemoryStorageClient = InMemoryGiftCommitStorageClient()
+  protected val converter = GiftCommitStorageConverter(inMemoryStorageClient)
   protected val validAccounts = hashMapOf<String, Account>()
   protected val invalidAccounts = hashMapOf<String, Account>()
 
