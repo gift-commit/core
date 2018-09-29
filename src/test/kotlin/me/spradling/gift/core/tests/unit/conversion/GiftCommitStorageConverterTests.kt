@@ -2,6 +2,7 @@ package me.spradling.gift.core.tests.unit.conversion
 
 import io.vertx.core.Future
 import io.vertx.core.json.Json
+import me.spradling.gift.core.api.extensions.unwrap
 import me.spradling.gift.core.api.models.Account
 import me.spradling.gift.core.conversion.GiftCommitStorageConverter
 import me.spradling.gift.core.database.memory.InMemoryGiftCommitStorageClient
@@ -67,7 +68,7 @@ class GiftCommitStorageConverterTests {
       @DisplayName("the merge should result in the expected Account")
       fun expectedAccountMerge() {
 
-        val mergedAccount = converter.merge(storageAccount.accountId, updateAccount).wait()
+        val mergedAccount = converter.merge(storageAccount.accountId, updateAccount).unwrap()
 
         assertThat(mergedAccount.accountId).isNotNull()
         assertThat(mergedAccount.groupId).isEqualTo(updateAccount.groupId ?: storageAccount.groupId)
@@ -77,17 +78,5 @@ class GiftCommitStorageConverterTests {
         assertThat(mergedAccount.password).isNotNull()
       }
     }
-  }
-
-  fun <T> Future<T>.wait() : T {
-    val countDownLatch = CountDownLatch(1)
-
-    this.setHandler { _ ->
-      countDownLatch.countDown()
-    }
-
-    countDownLatch.await()
-
-    return this.result()
   }
 }
