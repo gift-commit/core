@@ -1,35 +1,35 @@
 package me.spradling.gift.core.tests.unit.database
 
-import me.spradling.gift.core.api.models.errors.ErrorDetails
-import me.spradling.gift.core.api.models.exceptions.GiftCommitException
+import io.vertx.core.Future
+import me.spradling.gift.core.api.models.exceptions.ResourceNotFoundException
 import me.spradling.gift.core.database.memory.InMemoryGiftCommitStorageClient
 import me.spradling.gift.core.database.models.Account
 import me.spradling.gift.core.database.models.Item
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import java.util.concurrent.CountDownLatch
 
 @DisplayName("When I use the InMemoryGiftCommitStorageClient,")
 class InMemoryGiftCommitStorageClientTests {
 
   private val storageClient = InMemoryGiftCommitStorageClient()
   private val account = Account("123",
-                                "321",
-                                "Test",
-                                "User",
-                                "test@gmail.com",
-                                "password")
+      "321",
+      "Test",
+      "User",
+      "test@gmail.com",
+      "password")
   private val item = Item("321",
-                          "123",
-                          "Christmas",
-                          true,
-                          "PlayStation 4",
-                          "www.amazon.com",
-                          199.99,
-                          "So awesome!")
+      "123",
+      "Christmas",
+      true,
+      "PlayStation 4",
+      "www.amazon.com",
+      199.99,
+      "So awesome!")
 
   @Nested
   @DisplayName("to create an account,")
@@ -38,7 +38,7 @@ class InMemoryGiftCommitStorageClientTests {
     @Test
     @DisplayName("the account should be accessible")
     fun accountIsSuccessfullyCreated() {
-      storageClient.createAccount(account)
+      storageClient.createAccount(account).wait()
       assertThat(storageClient.accounts[account.accountId]).isEqualTo(account)
     }
   }
@@ -55,16 +55,16 @@ class InMemoryGiftCommitStorageClientTests {
     @Test
     @DisplayName("the retrieved account should be expected")
     fun accountIsExpected() {
-      val retrievedAccount = storageClient.getAccount(account.accountId)
+      val retrievedAccount = storageClient.getAccount(account.accountId).wait().result()
       assertThat(retrievedAccount).isEqualTo(account)
     }
 
     @Test
     @DisplayName("retrieving an account that doesn't exist throws Not Found exception")
     fun throwsNotFoundException() {
-      val exception = assertThrows(GiftCommitException::class.java) { storageClient.getAccount("DOES NOT EXIST") }
+      val response = storageClient.getAccount("DOES NOT EXIST").wait()
 
-      assertThat(exception.error).isEqualTo(ErrorDetails.RESOURCE_NOT_FOUND)
+      verifyFutureFailed(response, ResourceNotFoundException::class.java)
     }
   }
 
@@ -111,11 +111,9 @@ class InMemoryGiftCommitStorageClientTests {
     @Test
     @DisplayName("deleting an nonexistent account throws expected GiftCommitException")
     fun deletingNonexistentAccountThrows() {
-      val exception = assertThrows(GiftCommitException::class.java) {
-        storageClient.deleteAccount("DOES NOT EXIST")
-      }
+      val response = storageClient.deleteAccount("DOES NOT EXIST").wait()
 
-      assertThat(exception.error).isEqualTo(ErrorDetails.RESOURCE_NOT_FOUND)
+      verifyFutureFailed(response, ResourceNotFoundException::class.java)
     }
   }
 
@@ -126,7 +124,7 @@ class InMemoryGiftCommitStorageClientTests {
     @Test
     @DisplayName("the item should be accessible")
     fun itemIsSuccessfullyCreated() {
-      storageClient.createItem(item)
+      storageClient.createItem(item).wait()
       assertThat(storageClient.items[item.itemId]).isEqualTo(item)
     }
   }
@@ -143,16 +141,16 @@ class InMemoryGiftCommitStorageClientTests {
     @Test
     @DisplayName("the retrieved item should be expected")
     fun itemIsExpected() {
-      val retrievedItem = storageClient.getItem(item.itemId)
+      val retrievedItem = storageClient.getItem(item.itemId).wait().result()
       assertThat(retrievedItem).isEqualTo(item)
     }
 
     @Test
     @DisplayName("retrieving an item that doesn't exist throws Not Found exception")
     fun throwsNotFoundException() {
-      val exception = assertThrows(GiftCommitException::class.java) { storageClient.getItem("DOES NOT EXIST") }
+      val response = storageClient.getItem("DOES NOT EXIST").wait()
 
-      assertThat(exception.error).isEqualTo(ErrorDetails.RESOURCE_NOT_FOUND)
+      verifyFutureFailed(response, ResourceNotFoundException::class.java)
     }
   }
 
@@ -175,7 +173,6 @@ class InMemoryGiftCommitStorageClientTests {
       val storedItem = storageClient.items[item.itemId]!!
       assertThat(storedItem.price).isEqualTo(299.99)
       assertThat(storedItem.notes).isEqualTo("Kinda expensive!!")
-
     }
   }
 
@@ -199,11 +196,26 @@ class InMemoryGiftCommitStorageClientTests {
     @Test
     @DisplayName("deleting an nonexistent item throws expected GiftCommitException")
     fun deletingNonexistentItemThrows() {
-      val exception = assertThrows(GiftCommitException::class.java) {
-        storageClient.deleteItem("DOES NOT EXIST")
-      }
+      val response = storageClient.deleteItem("DOES NOT EXIST").wait()
 
-      assertThat(exception.error).isEqualTo(ErrorDetails.RESOURCE_NOT_FOUND)
+      verifyFutureFailed(response, ResourceNotFoundException::class.java)
     }
+  }
+
+  fun verifyFutureFailed(response: Future<out Any>, exceptionClass: Class<out Exception>) {
+    assertThat(response.failed()).isEqualTo(true)
+    assertThat(response.cause()).isInstanceOf(exceptionClass)
+  }
+
+  fun <T> Future<T>.wait(): Future<T> {
+    val countDownLatch = CountDownLatch(1)
+
+    this.setHandler { _ ->
+      countDownLatch.countDown()
+    }
+
+    countDownLatch.await()
+
+    return this
   }
 }

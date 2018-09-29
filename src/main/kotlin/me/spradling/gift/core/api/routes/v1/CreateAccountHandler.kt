@@ -1,5 +1,6 @@
 package me.spradling.gift.core.api.routes.v1
 
+import io.vertx.core.Future
 import me.spradling.gift.core.api.models.Account
 import me.spradling.gift.core.api.models.ApiRequest
 import me.spradling.gift.core.api.models.errors.ErrorDetails
@@ -13,16 +14,17 @@ class CreateAccountHandler(private val storageClient : GiftCommitStorageClient) 
 
   private val storageConverter  = GiftCommitStorageConverter(storageClient)
 
-  override fun handleRequest(request: ApiRequest<Account>): ApiResponse {
+  override fun handleRequest(request: ApiRequest<Account>): Future<ApiResponse> {
 
     if (request.requestBody.isInvalid()) {
-      return ApiResponse(ErrorDetails.INVALID_REQUEST)
+      return Future.succeededFuture(ApiResponse.from(ErrorDetails.INVALID_REQUEST))
     }
 
     val account = request.requestBody!!
-    val accountId = storageClient.createAccount(storageConverter.convert(account))
 
-    return CreatedResourceResponse(accountId)
+    return storageClient.createAccount(storageConverter.convert(account)).compose { id ->
+      Future.succeededFuture<ApiResponse>(CreatedResourceResponse(id))
+    }
   }
 
   private fun Account?.isInvalid() : Boolean {

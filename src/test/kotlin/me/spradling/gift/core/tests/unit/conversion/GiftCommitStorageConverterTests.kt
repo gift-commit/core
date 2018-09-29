@@ -1,5 +1,6 @@
 package me.spradling.gift.core.tests.unit.conversion
 
+import io.vertx.core.Future
 import io.vertx.core.json.Json
 import me.spradling.gift.core.api.models.Account
 import me.spradling.gift.core.conversion.GiftCommitStorageConverter
@@ -9,6 +10,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import java.util.concurrent.CountDownLatch
 
 @DisplayName("When the GiftCommitStorageConverter is used")
 class GiftCommitStorageConverterTests {
@@ -65,7 +67,7 @@ class GiftCommitStorageConverterTests {
       @DisplayName("the merge should result in the expected Account")
       fun expectedAccountMerge() {
 
-        val mergedAccount = converter.merge(storageAccount.accountId, updateAccount)
+        val mergedAccount = converter.merge(storageAccount.accountId, updateAccount).wait()
 
         assertThat(mergedAccount.accountId).isNotNull()
         assertThat(mergedAccount.groupId).isEqualTo(updateAccount.groupId ?: storageAccount.groupId)
@@ -75,5 +77,17 @@ class GiftCommitStorageConverterTests {
         assertThat(mergedAccount.password).isNotNull()
       }
     }
+  }
+
+  fun <T> Future<T>.wait() : T {
+    val countDownLatch = CountDownLatch(1)
+
+    this.setHandler { _ ->
+      countDownLatch.countDown()
+    }
+
+    countDownLatch.await()
+
+    return this.result()
   }
 }

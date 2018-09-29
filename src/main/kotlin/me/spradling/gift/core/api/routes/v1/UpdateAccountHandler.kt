@@ -1,9 +1,11 @@
 package me.spradling.gift.core.api.routes.v1
 
 import io.netty.handler.codec.http.HttpResponseStatus
+import io.vertx.core.Future
 import me.spradling.gift.core.api.models.Account
 import me.spradling.gift.core.api.models.ApiRequest
 import me.spradling.gift.core.api.models.errors.ErrorDetails
+import me.spradling.gift.core.api.models.exceptions.GiftCommitException
 import me.spradling.gift.core.api.models.exceptions.ResourceNotFoundException
 import me.spradling.gift.core.api.models.responses.ApiResponse
 import me.spradling.gift.core.api.routes.GiftCommitHandler
@@ -15,17 +17,17 @@ class UpdateAccountHandler @Inject constructor(private val storageClient: GiftCo
 
   private val storageConverter  = GiftCommitStorageConverter(storageClient)
 
-  override fun handleRequest(request: ApiRequest<Account>): ApiResponse {
+  override fun handleRequest(request: ApiRequest<Account>): Future<ApiResponse> {
 
-    val account = request.requestBody ?: return ApiResponse(ErrorDetails.INVALID_REQUEST)
-    val accountId = request.context.pathParam("accountId") ?: return ApiResponse(ErrorDetails.INVALID_REQUEST)
+    val account = request.requestBody ?: return Future.succeededFuture(ApiResponse.from(ErrorDetails.INVALID_REQUEST))
+    val accountId = request.context.pathParam("accountId") ?: return Future.succeededFuture(ApiResponse.from(ErrorDetails.INVALID_REQUEST))
 
-    try {
-      storageClient.updateAccount(accountId, storageConverter.merge(accountId, account))
-    } catch (ex : ResourceNotFoundException) {
-      return ApiResponse(ErrorDetails.RESOURCE_NOT_FOUND)
+    return storageConverter.merge(accountId, account).compose { mergedAccount ->
+      storageClient.updateAccount(accountId, mergedAccount).compose { _ ->
+        Future.succeededFuture(ApiResponse(HttpResponseStatus.NO_CONTENT.code()))
+      }
+    }.recover{ error ->
+      Future.succeededFuture(ApiResponse.from(error))
     }
-
-    return ApiResponse(HttpResponseStatus.NO_CONTENT.code())
   }
 }

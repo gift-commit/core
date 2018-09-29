@@ -1,5 +1,6 @@
 package me.spradling.gift.core.conversion
 
+import io.vertx.core.Future
 import me.spradling.gift.core.database.GiftCommitStorageClient
 import me.spradling.gift.core.database.models.Account
 import java.util.UUID
@@ -16,13 +17,14 @@ class GiftCommitStorageConverter @Inject constructor(private val storageClient: 
                    account.password!!)
   }
 
-  fun merge(accountId: String, account: me.spradling.gift.core.api.models.Account): Account {
-    val existingAccount = storageClient.getAccount(accountId)
-    return Account(accountId,
-                   account.groupId ?: existingAccount.groupId,
-                   account.firstName ?: existingAccount.firstName,
-                   account.lastName ?: existingAccount.lastName,
-                   account.email ?: existingAccount.email,
-                   account.password ?: existingAccount.password)
+  fun merge(accountId: String, account: me.spradling.gift.core.api.models.Account): Future<Account> {
+    return storageClient.getAccount(accountId).compose { existingAccount ->
+      Future.succeededFuture(Account(accountId,
+                                    account.groupId ?: existingAccount.groupId,
+                                    account.firstName ?: existingAccount.firstName,
+                                    account.lastName ?: existingAccount.lastName,
+                                    account.email ?: existingAccount.email,
+                                    account.password ?: existingAccount.password))
+    }
   }
 }

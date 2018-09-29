@@ -3,6 +3,7 @@ package me.spradling.gift.core.database.aws
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonTypeName
+import io.vertx.core.Future
 import me.spradling.gift.core.api.models.configuration.StorageClient
 import me.spradling.gift.core.api.models.exceptions.ResourceNotFoundException
 import me.spradling.gift.core.database.models.Account
@@ -35,7 +36,7 @@ class RDSGiftCommitStorageClient @JsonCreator constructor(
     Class.forName("com.mysql.jdbc.Driver").newInstance()
   }
 
-  override fun createAccount(account: Account) : String {
+  override fun createAccount(account: Account) : Future<String> {
     val createQuery = "INSERT INTO $accountTable VALUES (${account.accountId}," +
                                                         "${account.groupId}," +
                                                         "${account.firstName}," +
@@ -45,10 +46,10 @@ class RDSGiftCommitStorageClient @JsonCreator constructor(
 
     connection.createStatement().executeQuery(createQuery)
 
-    return account.accountId
+    return Future.succeededFuture(account.accountId)
   }
 
-  override fun getAccount(accountId: String): Account {
+  override fun getAccount(accountId: String): Future<Account> {
     val getQuery = "SELECT * FROM $accountTable WHERE accountId=$accountId"
     val accounts = mutableListOf<Account>()
     var resultSet = connection.createStatement().executeQuery(getQuery)
@@ -66,11 +67,11 @@ class RDSGiftCommitStorageClient @JsonCreator constructor(
       throw ResourceNotFoundException()
     }
 
-    return accounts[0]
+    return Future.succeededFuture(accounts[0])
 
   }
 
-  override fun updateAccount(accountId: String, updatedAccount: Account) {
+  override fun updateAccount(accountId: String, updatedAccount: Account) : Future<Void> {
     val updateQuery = "UPDATE $accountTable SET groupId = ${updatedAccount.firstName}," +
                                                "firstName = ${updatedAccount.firstName}" +
                                                "lastName = ${updatedAccount.lastName}" +
@@ -79,30 +80,31 @@ class RDSGiftCommitStorageClient @JsonCreator constructor(
                                            "WHERE accountId = $accountId"
 
     connection.createStatement().executeQuery(updateQuery)
+
+    return Future.succeededFuture()
   }
 
-  override fun deleteAccount(accountId: String) {
-    TODO("not implemented")
+  override fun deleteAccount(accountId: String): Future<Void> {
+    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
   }
 
-  override fun createItem(item: Item) : String {
-    TODO("not implemented")
+  override fun createItem(item: Item): Future<String> {
+    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
   }
 
-  override fun getItem(itemId: String): Item {
-    TODO("not implemented")
+  override fun getItem(itemId: String): Future<Item> {
+    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
   }
 
-  override fun getAccountItems(accountId: String): List<Item> {
-    TODO("not implemented")
+  override fun getAccountItems(accountId: String): Future<List<Item>> {
+    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
   }
 
-  override fun updateItem(itemId: String, updatedItem: Item) {
-    TODO("not implemented")
+  override fun updateItem(itemId: String, updatedItem: Item): Future<Void> {
+    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
   }
 
-  override fun deleteItem(itemId: String) {
-    TODO("not implemented")
+  override fun deleteItem(itemId: String): Future<Void> {
+    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
   }
-
 }

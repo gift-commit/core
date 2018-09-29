@@ -1,8 +1,7 @@
 package me.spradling.gift.core.database.memory
 
-import me.spradling.gift.core.api.models.errors.ErrorDetails
+import io.vertx.core.Future
 import me.spradling.gift.core.database.GiftCommitStorageClient
-import me.spradling.gift.core.api.models.exceptions.GiftCommitException
 import me.spradling.gift.core.api.models.exceptions.ResourceNotFoundException
 import me.spradling.gift.core.database.models.Account
 import me.spradling.gift.core.database.models.Item
@@ -13,45 +12,58 @@ class InMemoryGiftCommitStorageClient : GiftCommitStorageClient {
   val accounts: HashMap<String, Account> = hashMapOf()
   val items: HashMap<String, Item> = hashMapOf()
 
-  override fun createAccount(account: Account) : String {
+  override fun createAccount(account: Account) : Future<String> {
     val accountId = account.accountId
 
     accounts[accountId] = account
-    return accountId
+    return Future.succeededFuture(accountId)
   }
 
-  override fun getAccount(accountId: String): Account {
-    return accounts[accountId] ?: throw ResourceNotFoundException()
+  override fun getAccount(accountId: String): Future<Account> {
+    val account = accounts[accountId] ?: return Future.failedFuture(ResourceNotFoundException())
+
+    return Future.succeededFuture(account)
   }
 
-  override fun updateAccount(accountId: String, updatedAccount: Account) {
+  override fun updateAccount(accountId: String, updatedAccount: Account) : Future<Void> {
     accounts[accountId] = updatedAccount
+    return Future.succeededFuture()
   }
 
-  override fun deleteAccount(accountId: String) {
-    accounts.remove(accountId) ?: throw GiftCommitException(ErrorDetails.RESOURCE_NOT_FOUND)
+  override fun deleteAccount(accountId: String) : Future<Void> {
+    accounts.remove(accountId) ?: return Future.failedFuture(ResourceNotFoundException())
+    return Future.succeededFuture()
   }
 
-  override fun createItem(item: Item) : String {
+  override fun createItem(item: Item) : Future<String> {
     val itemId = item.itemId
 
     items[itemId] = item
-    return itemId
+    return Future.succeededFuture(itemId)
   }
 
-  override fun getItem(itemId: String): Item {
-    return items[itemId] ?: throw GiftCommitException(ErrorDetails.RESOURCE_NOT_FOUND)
+  override fun getItem(itemId: String): Future<Item> {
+    val item = items[itemId] ?: return Future.failedFuture(ResourceNotFoundException())
+    return Future.succeededFuture(item)
   }
 
-  override fun getAccountItems(accountId: String): List<Item> {
-    return items.values.stream().filter{ item  -> item.accountId == accountId}.collect(Collectors.toList())
+  override fun getAccountItems(accountId: String): Future<List<Item>> {
+    val items = items.values.stream().filter{ item  -> item.accountId == accountId}.collect(Collectors.toList())
+
+    if (items.isEmpty()) {
+      return Future.failedFuture(ResourceNotFoundException())
+    }
+
+    return Future.succeededFuture(items)
   }
 
-  override fun updateItem(itemId: String, updatedItem: Item) {
+  override fun updateItem(itemId: String, updatedItem: Item) : Future<Void> {
     items[itemId] = updatedItem
+    return Future.succeededFuture()
   }
 
-  override fun deleteItem(itemId: String) {
-    items.remove(itemId) ?: throw GiftCommitException(ErrorDetails.RESOURCE_NOT_FOUND)
+  override fun deleteItem(itemId: String) : Future<Void> {
+    items.remove(itemId) ?: return Future.failedFuture(ResourceNotFoundException())
+    return Future.succeededFuture()
   }
 }
