@@ -1,19 +1,19 @@
 package me.spradling.gift.core.tests.unit.database
 
-import io.vertx.core.Future
+import me.spradling.gift.core.api.extensions.wait
 import me.spradling.gift.core.api.models.exceptions.ResourceNotFoundException
 import me.spradling.gift.core.database.memory.InMemoryGiftCommitStorageClient
 import me.spradling.gift.core.database.models.Account
 import me.spradling.gift.core.database.models.Item
+import me.spradling.gift.core.tests.unit.UnitTestBase
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
-import java.util.concurrent.CountDownLatch
 
 @DisplayName("When I use the InMemoryGiftCommitStorageClient,")
-class InMemoryGiftCommitStorageClientTests {
+class InMemoryGiftCommitStorageClientTests : UnitTestBase() {
 
   private val storageClient = InMemoryGiftCommitStorageClient()
   private val account = Account("123",
@@ -64,7 +64,7 @@ class InMemoryGiftCommitStorageClientTests {
     fun throwsNotFoundException() {
       val response = storageClient.getAccount("DOES NOT EXIST").wait()
 
-      verifyFutureFailed(response, ResourceNotFoundException::class.java)
+      verifyFailedFuture(response, ResourceNotFoundException::class.java)
     }
   }
 
@@ -113,7 +113,7 @@ class InMemoryGiftCommitStorageClientTests {
     fun deletingNonexistentAccountThrows() {
       val response = storageClient.deleteAccount("DOES NOT EXIST").wait()
 
-      verifyFutureFailed(response, ResourceNotFoundException::class.java)
+      verifyFailedFuture(response, ResourceNotFoundException::class.java)
     }
   }
 
@@ -150,7 +150,7 @@ class InMemoryGiftCommitStorageClientTests {
     fun throwsNotFoundException() {
       val response = storageClient.getItem("DOES NOT EXIST").wait()
 
-      verifyFutureFailed(response, ResourceNotFoundException::class.java)
+      verifyFailedFuture(response, ResourceNotFoundException::class.java)
     }
   }
 
@@ -198,24 +198,7 @@ class InMemoryGiftCommitStorageClientTests {
     fun deletingNonexistentItemThrows() {
       val response = storageClient.deleteItem("DOES NOT EXIST").wait()
 
-      verifyFutureFailed(response, ResourceNotFoundException::class.java)
+      verifyFailedFuture(response, ResourceNotFoundException::class.java)
     }
-  }
-
-  fun verifyFutureFailed(response: Future<out Any>, exceptionClass: Class<out Exception>) {
-    assertThat(response.failed()).isEqualTo(true)
-    assertThat(response.cause()).isInstanceOf(exceptionClass)
-  }
-
-  fun <T> Future<T>.wait(): Future<T> {
-    val countDownLatch = CountDownLatch(1)
-
-    this.setHandler { _ ->
-      countDownLatch.countDown()
-    }
-
-    countDownLatch.await()
-
-    return this
   }
 }

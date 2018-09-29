@@ -7,7 +7,7 @@ import io.vertx.config.ConfigStoreOptions
 import io.vertx.core.Vertx
 import io.vertx.core.json.JsonObject
 import io.vertx.kotlin.config.ConfigRetrieverOptions
-import me.spradling.gift.core.api.VertxFuture
+import me.spradling.gift.core.api.extensions.unwrap
 import me.spradling.gift.core.api.models.configuration.GiftCommitConfiguration
 import javax.inject.Singleton
 
@@ -33,7 +33,7 @@ class ConfigurationModule {
 
     val configFuture = ConfigRetriever.getConfigAsFuture(retriever)
 
-    val jsonObject = VertxFuture.unwrap(configFuture)
+    val jsonObject = configFuture.unwrap()
     return jsonObject.mapTo(GiftCommitConfiguration::class.java)
   }
 }
