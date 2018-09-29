@@ -92,7 +92,18 @@ class RDSGiftCommitStorageClient @JsonCreator constructor(
   }
 
   override fun createItem(item: Item): Future<String> {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    val createQuery = "INSERT INTO $itemTable VALUES (${item.itemId}," +
+                                                     "${item.accountId}," +
+                                                     "${item.event}," +
+                                                     "${item.claimed}," +
+                                                     "${item.name}," +
+                                                     "${item.url}," +
+                                                     "${item.price}," +
+                                                     "${item.notes})"
+
+    connection.createStatement().executeQuery(createQuery)
+
+    return Future.succeededFuture(item.itemId)
   }
 
   override fun getItem(itemId: String): Future<Item> {
