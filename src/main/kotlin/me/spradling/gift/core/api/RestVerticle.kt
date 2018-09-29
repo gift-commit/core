@@ -10,6 +10,7 @@ import me.spradling.gift.core.database.GiftCommitStorageClient
 import me.spradling.gift.core.api.models.configuration.GiftCommitConfiguration
 import me.spradling.gift.core.api.routes.HealthHandler
 import me.spradling.gift.core.api.routes.v1.CreateAccountHandler
+import me.spradling.gift.core.api.routes.v1.UpdateAccountHandler
 import javax.inject.Inject
 
 class RestVerticle @Inject constructor(val configuration: GiftCommitConfiguration,
@@ -40,6 +41,7 @@ class RestVerticle @Inject constructor(val configuration: GiftCommitConfiguratio
     router.get("/health").handler(HealthHandler())
 
     router.post("/v1/accounts").handler(CreateAccountHandler(storageClient))
+    router.patch("/v1/accounts/:accountId").handler(UpdateAccountHandler(storageClient))
 
     return router
   }

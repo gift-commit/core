@@ -23,7 +23,7 @@ class CreateAccountHandlerTests {
 
   companion object {
     @JvmStatic
-    private val OperationFileName = "ApiAccount.json"
+    private val OperationFileName = "api.json"
   }
 
   private val mockContext = mock(RoutingContext::class.java)!!
@@ -34,7 +34,7 @@ class CreateAccountHandlerTests {
   @DisplayName("given a valid request,")
   inner class GivenValidRequest {
 
-    private val validRequestJson = CreateAccountHandlerTests::class.java.getResource("/data/valid/$OperationFileName").readText()
+    private val validRequestJson = CreateAccountHandlerTests::class.java.getResource("/data/valid/account/$OperationFileName").readText()
     private val validAccountRequest = Json.mapper.readValue(validRequestJson, Account::class.java)
 
     @Test
@@ -59,7 +59,7 @@ class CreateAccountHandlerTests {
   inner class GivenInvalidRequest {
 
     private val invalidRequestJson =
-        CreateAccountHandlerTests::class.java.getResource("/data/invalid/$OperationFileName").readText()
+        CreateAccountHandlerTests::class.java.getResource("/data/invalid/account/create.json").readText()
     private val invalidAccountRequest = Json.mapper.readValue(invalidRequestJson, Account::class.java)
 
     @Test

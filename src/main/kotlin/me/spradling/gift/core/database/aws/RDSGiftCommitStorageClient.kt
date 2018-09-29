@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonTypeName
 import me.spradling.gift.core.api.models.configuration.StorageClient
+import me.spradling.gift.core.api.models.exceptions.ResourceNotFoundException
 import me.spradling.gift.core.database.models.Account
 import me.spradling.gift.core.database.models.Item
 import java.sql.DriverManager
@@ -48,11 +49,36 @@ class RDSGiftCommitStorageClient @JsonCreator constructor(
   }
 
   override fun getAccount(accountId: String): Account {
-    TODO("not implemented")
+    val getQuery = "SELECT * FROM $accountTable WHERE accountId=$accountId"
+    val accounts = mutableListOf<Account>()
+    var resultSet = connection.createStatement().executeQuery(getQuery)
+
+    while(resultSet.next()) {
+      accounts.add(Account(resultSet.getString("accountId"),
+                           resultSet.getString("groupId"),
+                           resultSet.getString("firstName"),
+                           resultSet.getString("lastName"),
+                           resultSet.getString("email"),
+                           resultSet.getString("password")))
+    }
+
+    if (accounts.isEmpty()) {
+      throw ResourceNotFoundException()
+    }
+
+    return accounts[0]
+
   }
 
   override fun updateAccount(accountId: String, updatedAccount: Account) {
-    TODO("not implemented")
+    val updateQuery = "UPDATE $accountTable SET groupId = ${updatedAccount.firstName}," +
+                                               "firstName = ${updatedAccount.firstName}" +
+                                               "lastName = ${updatedAccount.lastName}" +
+                                               "email = ${updatedAccount.email}" +
+                                               "password = ${updatedAccount.password}" +
+                                           "WHERE accountId = $accountId"
+
+    connection.createStatement().executeQuery(updateQuery)
   }
 
   override fun deleteAccount(accountId: String) {

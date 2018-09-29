@@ -16,7 +16,7 @@ class GiftCommitStorageConverterTests {
   private val storageClient = InMemoryGiftCommitStorageClient()
   private val converter = GiftCommitStorageConverter(storageClient)
 
-  private val account = Json.mapper.readValue(this::class.java.classLoader.getResource("data/valid/ApiAccount.json")
+  private val account = Json.mapper.readValue(this::class.java.classLoader.getResource("data/valid/account/api.json")
                                                                           .readText(),
                                       Account::class.java)
 
@@ -49,7 +49,7 @@ class GiftCommitStorageConverterTests {
   inner class Merge {
 
     val storageAccount = converter.convert(account)
-    val updateAccount = Json.mapper.readValue(this::class.java.classLoader.getResource("data/valid/UpdateAccount.json")
+    val updateAccount = Json.mapper.readValue(this::class.java.classLoader.getResource("data/valid/account/update.json")
                                                                           .readText(),
                                               Account::class.java)
     @BeforeEach
