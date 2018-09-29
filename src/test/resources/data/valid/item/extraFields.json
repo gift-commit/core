@@ -3,5 +3,7 @@
   "name": "PlayStation 4",
   "url": "www.amazon.com",
   "price": 199.99,
-  "notes": "So Awesome!!"
+  "notes": "So Awesome!!",
+  "foo": "bar",
+  "bar": "foo"
 }

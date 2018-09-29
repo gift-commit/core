@@ -52,12 +52,12 @@ open class UnitTestBase {
     }
   }
 
-  private fun getResourceList(path: String): List<String> {
+  protected fun getResourceList(path: String): List<String> {
     val stream = UpdateAccountHandlerTests::class.java.getResourceAsStream(path) ?: return emptyList()
     return stream.bufferedReader().use { it.readLines() }
   }
 
-  private fun readResource(path : String): String {
+  protected fun readResource(path : String): String {
     return UpdateAccountHandlerTests::class.java.getResource(path).readText()
   }
 
