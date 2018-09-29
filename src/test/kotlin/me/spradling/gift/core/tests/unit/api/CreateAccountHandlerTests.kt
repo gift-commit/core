@@ -1,6 +1,7 @@
 package me.spradling.gift.core.tests.unit.api
 
 import io.netty.handler.codec.http.HttpResponseStatus
+import io.vertx.core.Future
 import io.vertx.core.json.Json
 import io.vertx.ext.web.RoutingContext
 import me.spradling.gift.core.api.models.Account
@@ -16,6 +17,9 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.mockito.Mockito.mock
+import java.time.Duration
+import java.util.concurrent.CountDownLatch
+import java.util.concurrent.TimeUnit
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @DisplayName("When I call `handle` on CreateAccountHandler,")
@@ -40,14 +44,14 @@ class CreateAccountHandlerTests {
     @Test
     @DisplayName("request should succeed with a 201 Created")
     fun succeedsWithCreated() {
-      val response = handler.handleRequest(ApiRequest(mockContext, validAccountRequest))
+      val response = handler.handleRequest(ApiRequest(mockContext, validAccountRequest)).wait()
       assertThat(response.statusCode).isEqualTo(HttpResponseStatus.CREATED.code())
     }
 
     @Test
     @DisplayName("request should return a valid created resource response")
     fun succeedsWithCreatedResourceResponse() {
-      val response = handler.handleRequest(ApiRequest(mockContext, validAccountRequest))
+      val response = handler.handleRequest(ApiRequest(mockContext, validAccountRequest)).wait()
       assertThat(response.body.get().javaClass).isEqualTo(CreatedResource::class.java)
       val responseBody = response.body.get() as CreatedResource
       assertThat(responseBody.id).isNotBlank()
@@ -65,19 +69,31 @@ class CreateAccountHandlerTests {
     @Test
     @DisplayName("request should fail with a 422 Unprocessible Entity")
     fun failsWithUnprocessibleEntity() {
-      val response = handler.handleRequest(ApiRequest(mockContext, invalidAccountRequest))
+      val response = handler.handleRequest(ApiRequest(mockContext, invalidAccountRequest)).wait()
       assertThat(response.statusCode).isEqualTo(HttpResponseStatus.UNPROCESSABLE_ENTITY.code())
     }
 
     @Test
     @DisplayName("request should return an Invalid Request error")
     fun failsWithInvalidRequestError() {
-      val response = handler.handleRequest(ApiRequest(mockContext, invalidAccountRequest))
+      val response = handler.handleRequest(ApiRequest(mockContext, invalidAccountRequest)).wait()
 
       assertThat(response.body.get().javaClass).isEqualTo(Error::class.java)
       val responseBody = response.body.get() as Error
       assertThat(responseBody.code).isEqualTo(ErrorDetails.INVALID_REQUEST.name)
       assertThat(responseBody.message).isEqualTo(ErrorDetails.INVALID_REQUEST.message)
     }
+  }
+
+  fun <T> Future<T>.wait() : T {
+    val countDownLatch = CountDownLatch(1)
+
+    this.setHandler { _ ->
+      countDownLatch.countDown()
+    }
+
+    countDownLatch.await()
+
+    return this.result()
   }
 }

@@ -1,6 +1,7 @@
 package me.spradling.gift.core.tests.unit.api
 
 import io.netty.handler.codec.http.HttpResponseStatus
+import io.vertx.core.Future
 import io.vertx.core.json.Json
 import io.vertx.ext.web.RoutingContext
 import me.spradling.gift.core.api.models.Account
@@ -20,6 +21,7 @@ import org.junit.jupiter.api.TestInstance
 import org.mockito.Mockito
 import org.mockito.Mockito.`when`
 import java.io.File
+import java.util.concurrent.CountDownLatch
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @DisplayName("When I call `handle` on UpdateAccountHandler,")
@@ -68,14 +70,14 @@ class UpdateAccountHandlerTests {
       @Test
       @DisplayName("request should succeed with a 204 No Content")
       fun succeedsWith204() {
-        val response = handler.handleRequest(ApiRequest(mockContext, validAccounts["api"]))
+        val response = handler.handleRequest(ApiRequest(mockContext, validAccounts["api"])).wait()
         Assertions.assertThat(response.statusCode).isEqualTo(HttpResponseStatus.NO_CONTENT.code())
       }
 
       @Test
       @DisplayName("request should succeed with No Content")
       fun succeedsWithNoContent() {
-        val response = handler.handleRequest(ApiRequest(mockContext, validAccounts["api"]))
+        val response = handler.handleRequest(ApiRequest(mockContext, validAccounts["api"])).wait()
         assertFalse(response.body.isPresent)
       }
 
@@ -85,14 +87,14 @@ class UpdateAccountHandlerTests {
         @Test
         @DisplayName("request with extra fields should still succeed with a 204 No Content")
         fun extraFieldStillSucceedsWith204() {
-          val response = handler.handleRequest(ApiRequest(mockContext, validAccounts["extraFields"]))
+          val response = handler.handleRequest(ApiRequest(mockContext, validAccounts["extraFields"])).wait()
           Assertions.assertThat(response.statusCode).isEqualTo(HttpResponseStatus.NO_CONTENT.code())
         }
 
         @Test
         @DisplayName("request with extra fields should succeed with No Content")
         fun extraFieldStillSucceedsWithNoContent() {
-          val response = handler.handleRequest(ApiRequest(mockContext, validAccounts["extraFields"]))
+          val response = handler.handleRequest(ApiRequest(mockContext, validAccounts["extraFields"])).wait()
           assertFalse(response.body.isPresent)
         }
       }
@@ -105,14 +107,14 @@ class UpdateAccountHandlerTests {
       @Test
       @DisplayName("request should fail with a 404 Http Status Code")
       fun failsWith404() {
-        val response = handler.handleRequest(ApiRequest(mockContext, validAccounts["api"]))
+        val response = handler.handleRequest(ApiRequest(mockContext, validAccounts["api"])).wait()
         Assertions.assertThat(response.statusCode).isEqualTo(HttpResponseStatus.NOT_FOUND.code())
       }
 
       @Test
       @DisplayName("request should fail with Not Found error")
       fun failsWithNotFoundError() {
-        val response = handler.handleRequest(ApiRequest(mockContext, validAccounts["api"]))
+        val response = handler.handleRequest(ApiRequest(mockContext, validAccounts["api"])).wait()
 
         Assertions.assertThat(response.body.get().javaClass).isEqualTo(Error::class.java)
         val responseBody = response.body.get() as Error
@@ -129,6 +131,18 @@ class UpdateAccountHandlerTests {
 
   private fun readResource(path : String): String {
     return UpdateAccountHandlerTests::class.java.getResource(path).readText()
+  }
+
+  fun <T> Future<T>.wait() : T {
+    val countDownLatch = CountDownLatch(1)
+
+    this.setHandler { _ ->
+      countDownLatch.countDown()
+    }
+
+    countDownLatch.await()
+
+    return this.result()
   }
 
 }
