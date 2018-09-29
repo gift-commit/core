@@ -15,7 +15,7 @@ import javax.inject.Inject
 
 class UpdateAccountHandler @Inject constructor(private val storageClient: GiftCommitStorageClient) : GiftCommitHandler<Account>(Account::class.java) {
 
-  private val storageConverter  = GiftCommitStorageConverter(storageClient)
+  private val storageConverter = GiftCommitStorageConverter(storageClient)
 
   override fun handleRequest(request: ApiRequest<Account>): Future<ApiResponse> {
 

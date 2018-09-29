@@ -1,5 +1,6 @@
 package me.spradling.gift.core.tests.unit.database
 
+import io.vertx.core.json.Json
 import me.spradling.gift.core.api.extensions.wait
 import me.spradling.gift.core.api.models.exceptions.ResourceNotFoundException
 import me.spradling.gift.core.database.memory.InMemoryGiftCommitStorageClient
@@ -16,20 +17,8 @@ import org.junit.jupiter.api.Test
 class InMemoryGiftCommitStorageClientTests : UnitTestBase() {
 
   private val storageClient = InMemoryGiftCommitStorageClient()
-  private val account = Account("123",
-      "321",
-      "Test",
-      "User",
-      "test@gmail.com",
-      "password")
-  private val item = Item("321",
-      "123",
-      "Christmas",
-      true,
-      "PlayStation 4",
-      "www.amazon.com",
-      199.99,
-      "So awesome!")
+  private val account = Json.mapper.readValue(readResource("/data/valid/database/account.json"), Account::class.java)
+  private val item = Json.mapper.readValue(readResource("/data/valid/database/item.json"), Item::class.java)
 
   @Nested
   @DisplayName("to create an account,")

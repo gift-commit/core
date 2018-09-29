@@ -95,7 +95,7 @@ class RDSGiftCommitStorageClient @JsonCreator constructor(
     val createQuery = "INSERT INTO $itemTable VALUES (${item.itemId}," +
                                                      "${item.accountId}," +
                                                      "${item.event}," +
-                                                     "${item.claimed}," +
+                                                     "${item.claimedBy}," +
                                                      "${item.name}," +
                                                      "${item.url}," +
                                                      "${item.price}," +
@@ -115,7 +115,19 @@ class RDSGiftCommitStorageClient @JsonCreator constructor(
   }
 
   override fun updateItem(itemId: String, updatedItem: Item): Future<Void> {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    val updateQuery = "UPDATE $accountTable SET itemId = ${updatedItem.itemId}," +
+                                               "accountId = ${updatedItem.accountId}" +
+                                               "event = ${updatedItem.event}" +
+                                               "claimedBy = ${updatedItem.claimedBy}" +
+                                               "name = ${updatedItem.name}" +
+                                               "url = ${updatedItem.url}" +
+                                               "price = ${updatedItem.price}" +
+                                               "notes = ${updatedItem.notes}" +
+                                           "WHERE itemId = $itemId"
+
+    connection.createStatement().executeQuery(updateQuery)
+
+    return Future.succeededFuture()
   }
 
   override fun deleteItem(itemId: String): Future<Void> {

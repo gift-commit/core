@@ -1,6 +1,9 @@
 {
+  "itemId": "123",
+  "accountId": "123",
   "event": "Christmas",
   "name": "PlayStation 4",
+  "claimedBy": "123",
   "url": "www.amazon.com",
   "price": 199.99,
   "notes": "So Awesome!!"
