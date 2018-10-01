@@ -24,7 +24,7 @@ class DeleteAccountHandlerTests : UnitTestBase() {
   @DisplayName("given a valid account id,")
   inner class ValidAccountId {
 
-    private val dbAccount = converter.convert(validAccounts["api"]!!)
+    private val dbAccount = storageConverter.convert(validAccounts["api"]!!)
 
     @BeforeEach
     fun setup() {

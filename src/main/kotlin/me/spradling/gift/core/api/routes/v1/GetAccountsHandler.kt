@@ -1,6 +1,8 @@
 package me.spradling.gift.core.api.routes.v1
 
+import io.vertx.core.Future
 import me.spradling.gift.core.api.models.ApiRequest
+import me.spradling.gift.core.api.models.errors.ErrorDetails
 import me.spradling.gift.core.api.models.responses.ApiResponse
 import me.spradling.gift.core.api.models.responses.RetrievedResourceResponse
 import me.spradling.gift.core.api.routes.GiftCommitHandler
@@ -11,15 +13,19 @@ class GetAccountsHandler(private val storageClient: GiftCommitStorageClient) : G
 
   private val storageConverter = GiftCommitApiConverter()
 
-  override fun handleRequest(request: ApiRequest<Void>): ApiResponse {
+  override fun handleRequest(request: ApiRequest<Void>): Future<ApiResponse> {
 
-//        if (request.context) {
-//            return ApiResponse(ErrorDetails.INVALID_REQUEST)
-//        }
+    if (request.context.queryParams().contains("limit")) {
+      val limit = request.context.queryParam("limit").first()
+      if (limit.isNotBlank()) {
+        val accounts = storageConverter.convert(storageClient.getAccounts(limit.toInt()))
+        if (accounts.isNotEmpty()) {
+          return Future.succeededFuture<ApiResponse>(RetrievedResourceResponse(accounts))
+        }
+      }
+    }
+    return Future.succeededFuture(ApiResponse.from(ErrorDetails.INVALID_REQUEST))
 
-    val count = request.context.queryParam("limit").first().toInt()
-    val accounts = storageConverter.convert(storageClient.getAccounts(count))
-
-    return RetrievedResourceResponse(accounts)
   }
+
 }
