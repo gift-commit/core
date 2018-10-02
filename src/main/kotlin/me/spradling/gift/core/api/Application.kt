@@ -11,11 +11,15 @@ class Application @Inject constructor(val vertx: Vertx, val restVerticle: RestVe
   companion object {
     @JvmStatic
     fun main(args: Array<String>) {
-      Json.mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
-      Json.prettyMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
-      Json.mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL)
-      Json.prettyMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL)
+      configureJsonMappers()
       DaggerAppComponent.create().application().launch()
+    }
+
+    private fun configureJsonMappers() {
+      Json.mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+      Json.mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL)
+      Json.prettyMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+      Json.prettyMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL)
     }
   }
 

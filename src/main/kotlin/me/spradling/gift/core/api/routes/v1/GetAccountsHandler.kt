@@ -18,14 +18,13 @@ class GetAccountsHandler(private val storageClient: GiftCommitStorageClient) : G
     if (request.context.queryParams().contains("limit")) {
       val limit = request.context.queryParam("limit").first()
       if (limit.isNotBlank()) {
-        val accounts = storageConverter.convert(storageClient.getAccounts(limit.toInt()))
-        if (accounts.isNotEmpty()) {
-          return Future.succeededFuture<ApiResponse>(RetrievedResourceResponse(accounts))
-        }
+        return storageClient.getAccounts(limit.toInt()).compose { accounts ->
+          Future.succeededFuture<ApiResponse>(RetrievedResourceResponse(storageConverter.convert(accounts)))
+        }.recover { _ -> Future.succeededFuture(ApiResponse.from(ErrorDetails.RESOURCE_NOT_FOUND)) }
       }
     }
-    return Future.succeededFuture(ApiResponse.from(ErrorDetails.INVALID_REQUEST))
 
+    return Future.succeededFuture(ApiResponse.from(ErrorDetails.INVALID_REQUEST))
   }
 
 }

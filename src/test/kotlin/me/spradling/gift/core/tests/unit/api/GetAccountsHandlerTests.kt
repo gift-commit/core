@@ -19,7 +19,7 @@ internal class GetAccountsHandlerTests : UnitTestBase() {
   @DisplayName("given valid query parameters,")
   inner class ValidQueryParameter {
 
-    private val apiAccount = apiConverter.convert(validAccounts["account"]!!)
+//    private val apiAccount = apiConverter.convert(validAccounts["account"]!!)
 
     @BeforeEach
     fun setup() {
