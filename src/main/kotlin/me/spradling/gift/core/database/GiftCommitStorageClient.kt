@@ -10,7 +10,7 @@ interface GiftCommitStorageClient {
   fun getAccount(accountId: String): Future<Account>
   fun updateAccount(accountId: String, updatedAccount: Account) : Future<Void>
   fun deleteAccount(accountId: String) : Future<Void>
-  fun getAccounts(limit: Int): Future<List<Account>>
+  fun getAccounts(limit: Int?): Future<List<Account>>
   fun createItem(item: Item) : Future<String>
   fun getItem(itemId: String): Future<Item>
   fun getAccountItems(accountId: String): Future<List<Item>>

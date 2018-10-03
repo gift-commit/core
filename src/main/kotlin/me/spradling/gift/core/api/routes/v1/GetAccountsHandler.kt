@@ -15,16 +15,15 @@ class GetAccountsHandler(private val storageClient: GiftCommitStorageClient) : G
 
   override fun handleRequest(request: ApiRequest<Void>): Future<ApiResponse> {
 
-    if (request.context.queryParams().contains("limit")) {
-      val limit = request.context.queryParam("limit").first()
-      if (limit.isNotBlank()) {
-        return storageClient.getAccounts(limit.toInt()).compose { accounts ->
-          Future.succeededFuture<ApiResponse>(RetrievedResourceResponse(storageConverter.convert(accounts)))
-        }.recover { _ -> Future.succeededFuture(ApiResponse.from(ErrorDetails.RESOURCE_NOT_FOUND)) }
-      }
-    }
+    val limit = request.context.queryParam("limit").firstOrNull()
 
-    return Future.succeededFuture(ApiResponse.from(ErrorDetails.INVALID_REQUEST))
+    return try {
+      storageClient.getAccounts(limit?.toInt()).compose { accounts ->
+        Future.succeededFuture<ApiResponse>(RetrievedResourceResponse(storageConverter.convert(accounts)))
+      }.recover { error -> Future.succeededFuture(ApiResponse.from(error)) }
+    } catch (e: NumberFormatException) {
+      Future.succeededFuture(ApiResponse.from(ErrorDetails.INVALID_REQUEST))
+    }
   }
 
 }

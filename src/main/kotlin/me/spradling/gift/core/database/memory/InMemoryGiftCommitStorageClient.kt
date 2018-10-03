@@ -25,8 +25,9 @@ class InMemoryGiftCommitStorageClient : GiftCommitStorageClient {
     return Future.succeededFuture(account)
   }
 
-  override fun getAccounts(limit: Int): Future<List<Account>> {
-    val accounts = accounts.values.toList().subList(0, minOf(limit, accounts.values.size))
+  override fun getAccounts(limit: Int?): Future<List<Account>> {
+    val numElements = limit ?: accounts.values.size
+    val accounts = accounts.values.toList().subList(0, minOf(numElements, accounts.values.size))
 
     if (accounts.isEmpty()) {
       return Future.failedFuture(ResourceNotFoundException())

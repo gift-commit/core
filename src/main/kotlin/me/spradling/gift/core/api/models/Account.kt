@@ -3,6 +3,7 @@ package me.spradling.gift.core.api.models
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
+import me.spradling.gift.core.database.models.Account
 import org.mindrot.jbcrypt.BCrypt
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -50,4 +51,11 @@ class Account {
     this.password = null
   }
 
+  @Override
+  fun equals(other: Account): Boolean {
+    return this.groupId.equals(other.groupId) &&
+        this.firstName.equals(other.firstName) &&
+        this.lastName.equals(other.lastName) &&
+        this.email.equals(other.email)
+  }
 }

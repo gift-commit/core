@@ -7,7 +7,7 @@ class GiftCommitApiConverter {
 
   fun convert(accounts: List<me.spradling.gift.core.database.models.Account>): List<Account> {
 
-    return accounts.stream().map { account: me.spradling.gift.core.database.models.Account ->
+    return accounts.stream().map { account ->
       Account(account.groupId,
               account.firstName,
               account.lastName,

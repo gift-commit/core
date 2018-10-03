@@ -24,7 +24,7 @@ class DeleteItemHandlerTests : UnitTestBase() {
   @DisplayName("given a valid item id,")
   inner class ValidItemId {
 
-    private val dbItem = converter.convert(validItems["api"]!!)
+    private val dbItem = storageConverter.convert(validItems["api"]!!)
 
     @BeforeEach
     fun setup() {

@@ -8,7 +8,6 @@ import me.spradling.gift.core.api.models.Item
 import me.spradling.gift.core.api.models.errors.Error
 import me.spradling.gift.core.api.models.errors.ErrorDetails
 import me.spradling.gift.core.api.models.responses.ApiResponse
-import me.spradling.gift.core.conversion.GiftCommitApiConverter
 import me.spradling.gift.core.conversion.GiftCommitStorageConverter
 import me.spradling.gift.core.database.memory.InMemoryGiftCommitStorageClient
 import me.spradling.gift.core.tests.unit.api.UpdateAccountHandlerTests
@@ -28,7 +27,6 @@ open class UnitTestBase {
   protected val mockContext = Mockito.mock(RoutingContext::class.java)!!
   protected val inMemoryStorageClient = InMemoryGiftCommitStorageClient()
   protected val storageConverter = GiftCommitStorageConverter(inMemoryStorageClient)
-  protected val apiConverter = GiftCommitApiConverter()
   protected val validAccounts = hashMapOf<String, Account>()
   protected val invalidAccounts = hashMapOf<String, Account>()
   protected val validItems = hashMapOf<String, Item>()
