@@ -75,24 +75,22 @@ class RDSGiftCommitStorageClient @JsonCreator constructor(
     val includesLimit = if (limit != null) "LIMIT $limit" else ""
     val getQuery = "SELECT * from $accountTable $includesLimit"
     val accounts = arrayListOf<Account>()
+    val resultSet = connection.createStatement().executeQuery(getQuery)
 
-    try {
-      val rs = connection.createStatement().executeQuery(getQuery)
-
-      while (rs.next()) {
-        accounts.add(Account(rs.getString("accountId"),
-                              rs.getString("groupId"),
-                              rs.getString("firstName"),
-                              rs.getString("lastName"),
-                              rs.getString("email"),
-                              rs.getString("password")))
-      }
-
-      return Future.succeededFuture(accounts)
-
-    } catch (e: SQLException) {
-      return Future.failedFuture(e)
+    while (resultSet.next()) {
+      accounts.add(Account(resultSet.getString("accountId"),
+                            resultSet.getString("groupId"),
+                            resultSet.getString("firstName"),
+                            resultSet.getString("lastName"),
+                            resultSet.getString("email"),
+                            resultSet.getString("password")))
     }
+
+    if (accounts.isEmpty()) {
+      throw ResourceNotFoundException()
+    }
+
+    return Future.succeededFuture(accounts)
   }
 
   override fun updateAccount(accountId: String, updatedAccount: Account) : Future<Void> {

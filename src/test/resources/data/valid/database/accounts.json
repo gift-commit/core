@@ -1,0 +1,34 @@
+[
+  {
+    "accountId": "123",
+    "groupId": "321",
+    "firstName": "Test",
+    "lastName": "User",
+    "email": "test@gmail.com",
+    "password": "password"
+  },
+  {
+    "accountId": "234",
+    "groupId": "432",
+    "firstName": "Test2",
+    "lastName": "User2",
+    "email": "test2@gmail.com",
+    "password": "password"
+  },
+  {
+    "accountId": "345",
+    "groupId": "543",
+    "firstName": "Test3",
+    "lastName": "User3",
+    "email": "test3@gmail.com",
+    "password": "password"
+  },
+  {
+    "accountId": "456",
+    "groupId": "654",
+    "firstName": "Test4",
+    "lastName": "User4",
+    "email": "test@gmail.com",
+    "password": "password"
+  }
+]
