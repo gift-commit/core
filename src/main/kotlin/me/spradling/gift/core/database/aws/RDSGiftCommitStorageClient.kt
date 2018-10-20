@@ -71,7 +71,7 @@ class RDSGiftCommitStorageClient @JsonCreator constructor(
     return Future.succeededFuture(accounts[0])
   }
 
-  override fun getAccounts(limit: Int?): Future<List<Account>> {
+  override fun listAccounts(limit: Int?): Future<List<Account>> {
     val includesLimit = if (limit != null) "LIMIT $limit" else ""
     val getQuery = "SELECT * from $accountTable $includesLimit"
     val accounts = arrayListOf<Account>()

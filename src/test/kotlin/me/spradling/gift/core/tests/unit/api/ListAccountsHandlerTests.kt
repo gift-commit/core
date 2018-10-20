@@ -5,7 +5,7 @@ import io.vertx.core.Future
 import me.spradling.gift.core.api.extensions.unwrap
 import me.spradling.gift.core.api.models.ApiRequest
 import me.spradling.gift.core.api.models.errors.ErrorDetails
-import me.spradling.gift.core.api.routes.v1.GetAccountsHandler
+import me.spradling.gift.core.api.routes.v1.ListAccountsHandler
 import me.spradling.gift.core.database.memory.InMemoryGiftCommitStorageClient
 import me.spradling.gift.core.tests.unit.UnitTestBase
 import org.assertj.core.api.Assertions.assertThat
@@ -14,11 +14,10 @@ import org.mockito.Mockito
 import org.mockito.Mockito.`when`
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@DisplayName("When I call `handleRequest` on GetAccountsHandler,")
-internal class GetAccountsHandlerTests : UnitTestBase() {
+@DisplayName("When I call `handleRequest` on ListAccountsHandler,")
+internal class ListAccountsHandlerTests : UnitTestBase() {
 
-  private val getHandler = GetAccountsHandler(inMemoryStorageClient)
-  private val mockInMemoryStorageClient = Mockito.mock(InMemoryGiftCommitStorageClient::class.java)
+  private val getHandler = ListAccountsHandler(inMemoryStorageClient)
 
   @Nested
   @DisplayName("given no results")
@@ -40,33 +39,16 @@ internal class GetAccountsHandlerTests : UnitTestBase() {
     @BeforeEach
     fun setup() {
       inMemoryStorageClient.createAccount(storageConverter.convert(validAccounts["api"]!!))
+      inMemoryStorageClient.createAccount(storageConverter.convert(validAccounts["api"]!!))
     }
 
     @Nested
     @DisplayName("given valid query parameters,")
     inner class ValidQueryParameter {
 
-      private val accounts = listOf(
-          me.spradling.gift.core.database.models.Account(
-              "123",
-              "321",
-              "Test",
-              "User",
-              "test@gmail.com",
-              "password"),
-          me.spradling.gift.core.database.models.Account(
-              "234",
-              "432",
-              "Test2",
-              "User2",
-              "test2@gmail.com",
-              "password")
-      )
-
       @BeforeEach
       fun setup() {
         `when`(mockContext.queryParam("limit")).thenReturn(listOf("10")) // Return that we want 10 accounts when calling the "limit" query param
-        `when`(mockInMemoryStorageClient.getAccounts(10)).thenReturn(Future.succeededFuture(accounts)) // Return a list of multiple accounts
       }
 
       @Test
@@ -76,7 +58,7 @@ internal class GetAccountsHandlerTests : UnitTestBase() {
 
         assertThat(response.statusCode).isEqualTo(HttpResponseStatus.OK.code()) // Should have 200 code
         assertThat(response.body.isPresent).isEqualTo(true)
-        assertThat(accounts == (response.body.get() as List<*>))
+        assertThat(listOf(validAccounts["api"], validAccounts["api"]) == (response.body.get() as List<*>))
       }
     }
 
@@ -92,9 +74,7 @@ internal class GetAccountsHandlerTests : UnitTestBase() {
         assertThat(response.statusCode).isEqualTo(HttpResponseStatus.OK.code())
         assertThat(response.body.isPresent).isEqualTo(true)
         val retrievedAccounts = response.body.get() as List<*>
-        assertThat(listOf(validAccounts["api"]).size == retrievedAccounts.size &&
-            listOf(validAccounts["api"]).containsAll(retrievedAccounts) &&
-            retrievedAccounts.containsAll(listOf(validAccounts["api"])))
+        assertThat(listOf(validAccounts["api"]) == retrievedAccounts)
       }
 
     }

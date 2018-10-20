@@ -25,7 +25,7 @@ class InMemoryGiftCommitStorageClient : GiftCommitStorageClient {
     return Future.succeededFuture(account)
   }
 
-  override fun getAccounts(limit: Int?): Future<List<Account>> {
+  override fun listAccounts(limit: Int?): Future<List<Account>> {
     val numElements = limit ?: accounts.values.size
     val accounts = accounts.values.toList().subList(0, minOf(numElements.coerceAtLeast(0), accounts.values.size))
 

@@ -71,14 +71,14 @@ class InMemoryGiftCommitStorageClientTests : UnitTestBase() {
     @Test
     @DisplayName("the retrieved accounts should be expected")
     fun accountIsExpected() {
-      val retrievedAccounts = storageClient.getAccounts(null).wait().result()
+      val retrievedAccounts = storageClient.listAccounts(null).wait().result()
       assertThat(retrievedAccounts).isEqualTo(accounts)
     }
 
     @Test
     @DisplayName("retrieving an invalid number of accounts throws Not Found exception")
     fun throwsNotFoundException() {
-      val response = storageClient.getAccounts(-1).wait()
+      val response = storageClient.listAccounts(-1).wait()
 
       verifyFailedFuture(response, ResourceNotFoundException::class.java)
     }

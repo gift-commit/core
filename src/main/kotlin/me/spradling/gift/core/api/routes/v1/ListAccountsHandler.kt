@@ -9,7 +9,7 @@ import me.spradling.gift.core.api.routes.GiftCommitHandler
 import me.spradling.gift.core.conversion.GiftCommitApiConverter
 import me.spradling.gift.core.database.GiftCommitStorageClient
 
-class GetAccountsHandler(private val storageClient: GiftCommitStorageClient) : GiftCommitHandler<Void>(Void::class.java) {
+class ListAccountsHandler(private val storageClient: GiftCommitStorageClient) : GiftCommitHandler<Void>(Void::class.java) {
 
   private val storageConverter = GiftCommitApiConverter()
 
@@ -18,7 +18,7 @@ class GetAccountsHandler(private val storageClient: GiftCommitStorageClient) : G
     val limit = request.context.queryParam("limit").firstOrNull()
 
     return try {
-      storageClient.getAccounts(limit?.toInt()).compose { accounts ->
+      storageClient.listAccounts(limit?.toInt()).compose { accounts ->
         Future.succeededFuture<ApiResponse>(RetrievedResourceResponse(storageConverter.convert(accounts)))
       }.recover { error -> Future.succeededFuture(ApiResponse.from(error)) }
     } catch (e: NumberFormatException) {
