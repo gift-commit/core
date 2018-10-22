@@ -65,7 +65,7 @@ class RDSGiftCommitStorageClient @JsonCreator constructor(
     }
 
     if (accounts.isEmpty()) {
-      throw ResourceNotFoundException()
+      return Future.failedFuture(ResourceNotFoundException())
     }
 
     return Future.succeededFuture(accounts[0])
@@ -87,7 +87,7 @@ class RDSGiftCommitStorageClient @JsonCreator constructor(
     }
 
     if (accounts.isEmpty()) {
-      throw ResourceNotFoundException()
+      return Future.failedFuture(ResourceNotFoundException())
     }
 
     return Future.succeededFuture(accounts)
