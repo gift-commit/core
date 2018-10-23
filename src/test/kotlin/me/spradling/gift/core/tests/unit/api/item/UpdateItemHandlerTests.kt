@@ -24,7 +24,7 @@ class UpdateItemHandlerTests : UnitTestBase() {
   @DisplayName("given a valid request,")
   inner class GivenValidRequest {
 
-    private val databaseItem = converter.convert(validItems["api"]!!)
+    private val databaseItem = storageConverter.convert(validItems["api"]!!)
 
     @BeforeEach
     fun setup() {

@@ -1,15 +1,10 @@
 package me.spradling.gift.core.tests.unit.api
 
 import io.netty.handler.codec.http.HttpResponseStatus
-import io.vertx.core.Future
-import io.vertx.ext.web.RoutingContext
 import me.spradling.gift.core.api.extensions.unwrap
 import me.spradling.gift.core.api.models.ApiRequest
-import me.spradling.gift.core.api.models.errors.Error
 import me.spradling.gift.core.api.models.errors.ErrorDetails
 import me.spradling.gift.core.api.routes.v1.UpdateAccountHandler
-import me.spradling.gift.core.conversion.GiftCommitStorageConverter
-import me.spradling.gift.core.database.memory.InMemoryGiftCommitStorageClient
 import me.spradling.gift.core.tests.unit.UnitTestBase
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Assertions.assertFalse
@@ -18,9 +13,7 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
-import org.mockito.Mockito
 import org.mockito.Mockito.`when`
-import java.util.concurrent.CountDownLatch
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @DisplayName("When I call `handle` on UpdateAccountHandler,")
@@ -32,7 +25,7 @@ class UpdateAccountHandlerTests : UnitTestBase() {
   @DisplayName("given a valid request,")
   inner class GivenValidRequest {
 
-    private val databaseAccount = converter.convert(validAccounts["api"]!!)
+    private val databaseAccount = storageConverter.convert(validAccounts["api"]!!)
 
     @BeforeEach
     fun setup() {

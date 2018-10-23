@@ -1,5 +1,6 @@
 package me.spradling.gift.core.tests.unit.database
 
+import com.fasterxml.jackson.core.type.TypeReference
 import io.vertx.core.json.Json
 import me.spradling.gift.core.api.extensions.wait
 import me.spradling.gift.core.api.models.exceptions.ResourceNotFoundException
@@ -18,6 +19,7 @@ class InMemoryGiftCommitStorageClientTests : UnitTestBase() {
 
   private val storageClient = InMemoryGiftCommitStorageClient()
   private val account = Json.mapper.readValue(readResource("/data/valid/database/account.json"), Account::class.java)
+  private val accounts: List<Account> = Json.mapper.readValue(readResource("/data/valid/database/accounts.json"), object: TypeReference<List<Account>>() {})
   private val item = Json.mapper.readValue(readResource("/data/valid/database/item.json"), Item::class.java)
 
   @Nested
@@ -52,6 +54,31 @@ class InMemoryGiftCommitStorageClientTests : UnitTestBase() {
     @DisplayName("retrieving an account that doesn't exist throws Not Found exception")
     fun throwsNotFoundException() {
       val response = storageClient.getAccount("DOES NOT EXIST").wait()
+
+      verifyFailedFuture(response, ResourceNotFoundException::class.java)
+    }
+  }
+
+  @Nested
+  @DisplayName("to get multiple accounts,")
+  inner class GetAccounts {
+
+    @BeforeEach
+    fun setup() {
+      accounts.forEach { account -> storageClient.createAccount(account) }
+    }
+
+    @Test
+    @DisplayName("the retrieved accounts should be expected")
+    fun accountIsExpected() {
+      val retrievedAccounts = storageClient.listAccounts(null).wait().result()
+      assertThat(retrievedAccounts).isEqualTo(accounts)
+    }
+
+    @Test
+    @DisplayName("retrieving an invalid number of accounts throws Not Found exception")
+    fun throwsNotFoundException() {
+      val response = storageClient.listAccounts(-1).wait()
 
       verifyFailedFuture(response, ResourceNotFoundException::class.java)
     }

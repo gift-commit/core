@@ -3,20 +3,59 @@ package me.spradling.gift.core.api.models
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
+import me.spradling.gift.core.database.models.Account
 import org.mindrot.jbcrypt.BCrypt
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-class Account @JsonCreator constructor(
-    @JsonProperty("group")
-    val groupId: String?,
-    @JsonProperty("firstName")
-    val firstName: String?,
-    @JsonProperty("lastName")
-    val lastName: String?,
-    @JsonProperty("email")
-    val email: String?,
-    @JsonProperty("password")
-    password: String?
-) {
-  val password : String? = BCrypt.hashpw(password, BCrypt.gensalt())
+class Account {
+  @JsonProperty("groupId")
+  val groupId: String?
+
+  @JsonProperty("firstName")
+  val firstName: String?
+
+  @JsonProperty("lastName")
+  val lastName: String?
+
+  @JsonProperty("email")
+  val email: String?
+
+  @JsonProperty("password")
+  val password: String?
+
+  @JsonCreator
+  constructor(
+      @JsonProperty("groupId")
+      groupId: String?,
+      @JsonProperty("firstName")
+      firstName: String?,
+      @JsonProperty("lastName")
+      lastName: String?,
+      @JsonProperty("email")
+      email: String?,
+      @JsonProperty("password")
+      password: String?
+  ) {
+    this.groupId = groupId
+    this.firstName = firstName
+    this.lastName = lastName
+    this.email = email
+    this.password = BCrypt.hashpw(password, BCrypt.gensalt())
+  }
+
+  constructor(groupId: String?, firstName: String?, lastName: String?, email: String?) {
+    this.groupId = groupId
+    this.firstName = firstName
+    this.lastName = lastName
+    this.email = email
+    this.password = null
+  }
+
+  @Override
+  fun equals(other: Account): Boolean {
+    return this.groupId.equals(other.groupId) &&
+        this.firstName.equals(other.firstName) &&
+        this.lastName.equals(other.lastName) &&
+        this.email.equals(other.email)
+  }
 }

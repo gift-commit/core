@@ -26,7 +26,7 @@ open class UnitTestBase {
 
   protected val mockContext = Mockito.mock(RoutingContext::class.java)!!
   protected val inMemoryStorageClient = InMemoryGiftCommitStorageClient()
-  protected val converter = GiftCommitStorageConverter(inMemoryStorageClient)
+  protected val storageConverter = GiftCommitStorageConverter(inMemoryStorageClient)
   protected val validAccounts = hashMapOf<String, Account>()
   protected val invalidAccounts = hashMapOf<String, Account>()
   protected val validItems = hashMapOf<String, Item>()

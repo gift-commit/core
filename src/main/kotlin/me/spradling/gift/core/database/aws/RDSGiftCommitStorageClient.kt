@@ -9,6 +9,7 @@ import me.spradling.gift.core.api.models.exceptions.ResourceNotFoundException
 import me.spradling.gift.core.database.models.Account
 import me.spradling.gift.core.database.models.Item
 import java.sql.DriverManager
+import java.sql.SQLException
 
 @JsonTypeName("RDS")
 class RDSGiftCommitStorageClient @JsonCreator constructor(
@@ -54,21 +55,42 @@ class RDSGiftCommitStorageClient @JsonCreator constructor(
     val accounts = mutableListOf<Account>()
     var resultSet = connection.createStatement().executeQuery(getQuery)
 
-    while(resultSet.next()) {
+    while (resultSet.next()) {
       accounts.add(Account(resultSet.getString("accountId"),
-                           resultSet.getString("groupId"),
-                           resultSet.getString("firstName"),
-                           resultSet.getString("lastName"),
-                           resultSet.getString("email"),
-                           resultSet.getString("password")))
+          resultSet.getString("groupId"),
+          resultSet.getString("firstName"),
+          resultSet.getString("lastName"),
+          resultSet.getString("email"),
+          resultSet.getString("password")))
     }
 
     if (accounts.isEmpty()) {
-      throw ResourceNotFoundException()
+      return Future.failedFuture(ResourceNotFoundException())
     }
 
     return Future.succeededFuture(accounts[0])
+  }
 
+  override fun listAccounts(limit: Int?): Future<List<Account>> {
+    val includesLimit = if (limit != null) "LIMIT $limit" else ""
+    val getQuery = "SELECT * from $accountTable $includesLimit"
+    val accounts = arrayListOf<Account>()
+    val resultSet = connection.createStatement().executeQuery(getQuery)
+
+    while (resultSet.next()) {
+      accounts.add(Account(resultSet.getString("accountId"),
+                            resultSet.getString("groupId"),
+                            resultSet.getString("firstName"),
+                            resultSet.getString("lastName"),
+                            resultSet.getString("email"),
+                            resultSet.getString("password")))
+    }
+
+    if (accounts.isEmpty()) {
+      return Future.failedFuture(ResourceNotFoundException())
+    }
+
+    return Future.succeededFuture(accounts)
   }
 
   override fun updateAccount(accountId: String, updatedAccount: Account) : Future<Void> {
